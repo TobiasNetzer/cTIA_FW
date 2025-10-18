@@ -17,13 +17,13 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <cmd_protocol_layer.h>
 #include "main.h"
 #include "crc.h"
 #include "i2c.h"
 #include "spi.h"
 #include "usart.h"
 #include "usb_device.h"
-#include "wwdg.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -92,13 +92,12 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_CRC_Init();
-  MX_WWDG_Init();
   MX_USB_Device_Init();
   MX_I2C2_Init();
   MX_SPI1_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
+  MX_CRC_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -107,6 +106,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //uint8_t payload[2] = {0x01, 0x02};
+	  //cmd_transmit(0x0102, 0x11, 0x2, payload);
+
+	  //HAL_Delay(1000);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -151,10 +155,6 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-
-  /** Enables the Clock Security System
-  */
-  HAL_RCC_EnableCSS();
 }
 
 /* USER CODE BEGIN 4 */

@@ -56,11 +56,13 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, SHIFT_REG_G_STIM_Pin|SHIFT_REG_CLR_Pin|SHIFT_REG_EN_MEAS_H_Pin|SHIFT_REG_EN_MEAS_L_Pin
-                          |SHIFT_REG_EN_STIM_Pin|SHIFT_REG_G_MEAS_H_Pin|SHIFT_REG_G_MEAS_L_Pin|SHIFT_REG_RCK_MEAS_H_Pin
-                          |SHIFT_REG_RCK_MEAS_L_Pin|SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_RESET);
+                          |SHIFT_REG_EN_STIM_Pin|SHIFT_REG_G_MEAS_H_Pin|SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, EXT_STIM_1_ON_Pin|EXT_STIM_2_ON_Pin|EXT_STIM_3_ON_Pin|EXT_STIM_4_ON_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, SHIFT_REG_RCK_MEAS_H_Pin|SHIFT_REG_RCK_MEAS_L_Pin|SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : EXT_PROBE_ON_Pin EXT_TRIG_ON_Pin */
   GPIO_InitStruct.Pin = EXT_PROBE_ON_Pin|EXT_TRIG_ON_Pin;

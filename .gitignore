@@ -4,6 +4,9 @@
 #metadata
 .metadata/
 
+#debug probe
+*.launch
+
 #Debug
 Debug/
 debug/
