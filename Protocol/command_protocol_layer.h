@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "command_reference.h"
 
 #define MAX_TRANSMIT_RETRIES 10
 #define TRANSMIT_RETRY_DELAY_MS 10
@@ -29,11 +30,9 @@ typedef struct _cmd_frame_s {
 	uint8_t crc;
 } cmd_frame_t;
 
-uint8_t cmd_transmit(uint16_t cmd, uint8_t ctrl_byte, uint8_t payload_size, uint8_t *payload);
+ctia_status_t cmd_transmit(cmd_frame_t *frame);
 
-uint8_t cmd_transmit_no_payload(uint16_t cmd);
-
-void get_frame(cmd_frame_t** frame);
+void get_frame(cmd_frame_t **frame);
 
 bool get_frame_ready(void);
 

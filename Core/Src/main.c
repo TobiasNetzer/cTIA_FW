@@ -17,6 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <cTIA.h>
 #include "main.h"
 #include "crc.h"
 #include "i2c.h"
@@ -99,16 +100,24 @@ int main(void)
   MX_CRC_Init();
   /* USER CODE BEGIN 2 */
 
+  /* Enable SHIFT REGISTERS */
+  HAL_GPIO_WritePin(SHIFT_REG_EN_STIM_GPIO_Port, SHIFT_REG_EN_STIM_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SHIFT_REG_EN_MEAS_H_GPIO_Port, SHIFT_REG_EN_MEAS_H_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SHIFT_REG_EN_MEAS_L_GPIO_Port, SHIFT_REG_EN_MEAS_L_Pin, GPIO_PIN_RESET);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
+
 	  if (get_frame_ready()) {
+
 		  cmd_frame_t *cmd_frame = NULL;
 		  get_frame(&cmd_frame);
 		  handle_command(cmd_frame);
 		  clear_frame_ready();
+
 	  }
     /* USER CODE END WHILE */
 

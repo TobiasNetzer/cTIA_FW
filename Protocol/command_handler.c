@@ -5,84 +5,219 @@
  *      Author: tobias
  */
 
+#include <cTIA.h>
 #include "command_handler.h"
 #include "command_reference.h"
 #include "main.h" // needed for GPIO #defines
-#include "cTIA.h"
+#include <stdbool.h>
 
-void handle_command(const cmd_frame_t *frame) {
+void handle_command(cmd_frame_t *frame) {
 
 	if (frame == NULL) return;
+
+	ctia_status_t status = CTIA_SUCCESS;
+	bool send_response = !(frame->control_byte & CONTROL_BYTE_DONT_SEND_RESPONSE);
 
 	switch (frame->command) {
 
 		/** SET CMD **/
+		case SET_EXCLUSIVE_MEAS_H_CH: {
+			if (frame->payload_size != 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_set_exclusive_meas_h_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** SET CMD **/
+		case SET_MEAS_H_CH: {
+			if (frame->payload_size != 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_set_meas_h_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** SET CMD **/
+		case SET_BITFIELD_MEAS_H_CH: {
+			if (frame->payload_size == 0) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			status = cTIA_set_meas_h_ch_bitfield(frame->payload, frame->payload_size);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** SET CMD **/
+		case SET_EXCLUSIVE_MEAS_L_CH: {
+			if (frame->payload_size != 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_set_exclusive_meas_l_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** SET CMD **/
+		case SET_MEAS_L_CH: {
+			if (frame->payload_size != 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_set_meas_l_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** SET CMD **/
+		case SET_BITFIELD_MEAS_L_CH: {
+			if (frame->payload_size == 0) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			status = cTIA_set_meas_l_ch_bitfield(frame->payload, frame->payload_size);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** SET CMD **/
+		case SET_EXCLUSIVE_STIM_CH: {
+			if (frame->payload_size != 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_set_exclusive_stim_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** SET CMD **/
 		case SET_STIM_CH: {
-			set_stim_ch();
-			cmd_transmit_no_payload(RESP_OK);
+			if (frame->payload_size != 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_set_stim_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
 			break;
 		}
 
 		/** SET CMD **/
-		case SET_EXT_STIM_1: {
-			HAL_GPIO_WritePin(GPIOD, EXT_STIM_1_ON_Pin, GPIO_PIN_SET);
-			cmd_transmit_no_payload(RESP_OK);
+		case SET_BITFIELD_STIM_CH: {
+			if (frame->payload_size == 0) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			status = cTIA_set_stim_ch_bitfield(frame->payload, frame->payload_size);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
 			break;
 		}
 
 		/** SET CMD **/
-		case SET_EXT_STIM_2: {
-			HAL_GPIO_WritePin(GPIOD, EXT_STIM_2_ON_Pin, GPIO_PIN_SET);
-			cmd_transmit_no_payload(RESP_OK);
+		case SET_EXT_STIM_CH: {
+			if (frame->payload_size != 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_set_ext_stim_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
 			break;
 		}
 
 		/** SET CMD **/
-		case SET_EXT_STIM_3: {
-			HAL_GPIO_WritePin(GPIOD, EXT_STIM_3_ON_Pin, GPIO_PIN_SET);
-			cmd_transmit_no_payload(RESP_OK);
+		case SET_BITFIELD_EXT_STIM_CH: {
+			if (frame->payload_size == 0) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			status = cTIA_set_ext_stim_ch_bitfield(frame->payload, frame->payload_size);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
 			break;
 		}
 
 		/** SET CMD **/
-		case SET_EXT_STIM_4: {
-			HAL_GPIO_WritePin(GPIOD, EXT_STIM_4_ON_Pin, GPIO_PIN_SET);
-			cmd_transmit_no_payload(RESP_OK);
+		case SET_EXT_PROBE_IN: {
+			if (frame->payload_size != 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_set_ext_probe_in(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** SET CMD **/
+		case SET_EXT_TRIGGER: {
+			if (frame->payload_size != 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_set_ext_trigger(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
 			break;
 		}
 
 		/** CLR CMD **/
-		case CLR_EXT_STIM_1: {
-			HAL_GPIO_WritePin(GPIOD, EXT_STIM_1_ON_Pin, GPIO_PIN_RESET);
-			cmd_transmit_no_payload(RESP_OK);
-			break;
-		}
-
-		/** CLR CMD **/
-		case CLR_EXT_STIM_2: {
-			HAL_GPIO_WritePin(GPIOD, EXT_STIM_2_ON_Pin, GPIO_PIN_RESET);
-			cmd_transmit_no_payload(RESP_OK);
-			break;
-		}
-
-		/** CLR CMD **/
-		case CLR_EXT_STIM_3: {
-			HAL_GPIO_WritePin(GPIOD, EXT_STIM_3_ON_Pin, GPIO_PIN_RESET);
-			cmd_transmit_no_payload(RESP_OK);
-			break;
-		}
-
-		/** CLR CMD **/
-		case CLR_EXT_STIM_4: {
-			HAL_GPIO_WritePin(GPIOD, EXT_STIM_4_ON_Pin, GPIO_PIN_RESET);
-			cmd_transmit_no_payload(RESP_OK);
+		case CLR_EXT_STIM_CH: {
+			if (frame->payload_size != 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_clear_ext_stim_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
 			break;
 		}
 
 		default: {
-			cmd_transmit_no_payload(RESP_INVALID_CMD);
+			status = CTIA_INVALID_CMD;
 		}
 
 	}
 
+	if (status != CTIA_SUCCESS) goto error;
+
+	if (send_response) cmd_transmit(frame);
+	return;
+
+error:
+ 	frame->command = RESP_ERROR;
+ 	frame->control_byte = 0;
+	frame->payload_size = 1;
+	frame->payload[0] = status;
+	if (send_response) cmd_transmit(frame);
+	return;
 }

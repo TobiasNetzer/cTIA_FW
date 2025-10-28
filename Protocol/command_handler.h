@@ -10,6 +10,6 @@
 
 #include <command_protocol_layer.h>
 
-void handle_command(const cmd_frame_t* frame);
+void handle_command(cmd_frame_t* frame);
 
 #endif /* COMMAND_HANDLER_H_ */
