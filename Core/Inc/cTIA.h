@@ -52,6 +52,20 @@ ctia_status_t cTIA_set_ext_stim_ch(uint8_t channel);
 
 ctia_status_t cTIA_set_ext_stim_ch_bitfield(const uint8_t *payload, uint8_t size);
 
+ctia_status_t cTIA_clear_meas_h_ch(uint8_t channel);
+
+ctia_status_t cTIA_clear_meas_h(void);
+
+ctia_status_t cTIA_clear_meas_l_ch(uint8_t channel);
+
+ctia_status_t cTIA_clear_meas_l(void);
+
+ctia_status_t cTIA_clear_stim_ch(uint8_t channel);
+
+ctia_status_t cTIA_clear_stim(void);
+
 ctia_status_t cTIA_clear_ext_stim_ch(uint8_t channel);
+
+ctia_status_t cTIA_clear_ext_stim(void);
 
 #endif /* CTIA_H_ */

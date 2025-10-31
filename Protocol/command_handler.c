@@ -5,10 +5,9 @@
  *      Author: tobias
  */
 
-#include <cTIA.h>
 #include "command_handler.h"
+#include "cTIA.h"
 #include "command_reference.h"
-#include "main.h" // needed for GPIO #defines
 #include <stdbool.h>
 
 void handle_command(cmd_frame_t *frame) {
@@ -22,7 +21,11 @@ void handle_command(cmd_frame_t *frame) {
 
 		/** SET CMD **/
 		case SET_EXCLUSIVE_MEAS_H_CH: {
-			if (frame->payload_size != 1) {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
@@ -35,7 +38,11 @@ void handle_command(cmd_frame_t *frame) {
 
 		/** SET CMD **/
 		case SET_MEAS_H_CH: {
-			if (frame->payload_size != 1) {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
@@ -61,7 +68,11 @@ void handle_command(cmd_frame_t *frame) {
 
 		/** SET CMD **/
 		case SET_EXCLUSIVE_MEAS_L_CH: {
-			if (frame->payload_size != 1) {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
@@ -74,7 +85,11 @@ void handle_command(cmd_frame_t *frame) {
 
 		/** SET CMD **/
 		case SET_MEAS_L_CH: {
-			if (frame->payload_size != 1) {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
@@ -100,7 +115,11 @@ void handle_command(cmd_frame_t *frame) {
 
 		/** SET CMD **/
 		case SET_EXCLUSIVE_STIM_CH: {
-			if (frame->payload_size != 1) {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
@@ -113,7 +132,11 @@ void handle_command(cmd_frame_t *frame) {
 
 		/** SET CMD **/
 		case SET_STIM_CH: {
-			if (frame->payload_size != 1) {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
@@ -139,7 +162,11 @@ void handle_command(cmd_frame_t *frame) {
 
 		/** SET CMD **/
 		case SET_EXT_STIM_CH: {
-			if (frame->payload_size != 1) {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
@@ -165,7 +192,11 @@ void handle_command(cmd_frame_t *frame) {
 
 		/** SET CMD **/
 		case SET_EXT_PROBE_IN: {
-			if (frame->payload_size != 1) {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
@@ -178,7 +209,11 @@ void handle_command(cmd_frame_t *frame) {
 
 		/** SET CMD **/
 		case SET_EXT_TRIGGER: {
-			if (frame->payload_size != 1) {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
@@ -190,12 +225,103 @@ void handle_command(cmd_frame_t *frame) {
 		}
 
 		/** CLR CMD **/
+		case CLR_MEAS_H_CH: {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_clear_meas_h_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** CLR CMD **/
+		case CLR_MEAS_H: {
+			status = cTIA_clear_meas_h();
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** CLR CMD **/
+		case CLR_MEAS_L_CH: {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_clear_meas_l_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** CLR CMD **/
+		case CLR_MEAS_L: {
+			status = cTIA_clear_meas_l();
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** CLR CMD **/
+		case CLR_STIM_CH: {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
+				status = CTIA_TOO_MANY_BYTES;
+				goto error;
+			}
+			status = cTIA_clear_stim_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** CLR CMD **/
+		case CLR_STIM: {
+			status = cTIA_clear_stim();
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** CLR CMD **/
 		case CLR_EXT_STIM_CH: {
-			if (frame->payload_size != 1) {
+			if (frame->payload_size < 1) {
+				status = CTIA_TOO_FEW_BYTES;
+				goto error;
+			}
+			if (frame->payload_size > 1) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
 			status = cTIA_clear_ext_stim_ch(frame->payload[0]);
+			frame->command = RESP_OK;
+			frame->control_byte = 0;
+			frame->payload_size = 0;
+			break;
+		}
+
+		/** CLR CMD **/
+		case CLR_EXT_STIM: {
+			status = cTIA_clear_ext_stim();
 			frame->command = RESP_OK;
 			frame->control_byte = 0;
 			frame->payload_size = 0;

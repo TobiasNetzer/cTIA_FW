@@ -121,7 +121,7 @@ void cmd_receive_callback(uint8_t *buf, uint32_t *len) {
 		 * Therefore a minimal frame is created and cast to cmd_frame_t *.
 		 */
 		uint8_t busy_frame[7] = {0x00, 0x00, 0x02, 0x01, 0x00, 0x01, 0x08};
-		if (cmd_transmit((cmd_frame_t *)&busy_frame) != CTIA_SUCCESS) Error_Handler(); // cmd_handler not finished - If transmit fails handle error
+		if (cmd_transmit((cmd_frame_t *) &busy_frame) != CTIA_SUCCESS) Error_Handler(); // cmd_handler not finished - If transmit fails handle error
 		return;
 	}
 
