@@ -9,11 +9,13 @@
 #include "main.h"
 #include <string.h>
 
+extern UART_HandleTypeDef huart1;
+
 static ctia_state_t ctia_state = {0};
 
 ctia_status_t cTIA_set_exclusive_meas_h_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT) return CTIA_UNAVAILABLE;
+	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
 
 	memset(ctia_state.active_meas_h_ch_bitfield, 0x00, sizeof(ctia_state.active_meas_h_ch_bitfield));
 
@@ -32,7 +34,7 @@ ctia_status_t cTIA_set_exclusive_meas_h_ch(uint8_t channel) {
 
 ctia_status_t cTIA_set_meas_h_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT) return CTIA_UNAVAILABLE;
+	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -50,7 +52,7 @@ ctia_status_t cTIA_set_meas_h_ch(uint8_t channel) {
 
 ctia_status_t cTIA_set_meas_h_ch_bitfield(const uint8_t *payload, uint8_t size) {
 
-	if (size == 0) return CTIA_INVALID_PARAMETER;
+	if (payload == NULL || size == 0) return CTIA_INVALID_PARAMETER;
 
 	memset(ctia_state.active_meas_h_ch_bitfield, 0x00, sizeof(ctia_state.active_meas_h_ch_bitfield));
 	memcpy(ctia_state.active_meas_h_ch_bitfield, payload, size);
@@ -66,7 +68,7 @@ ctia_status_t cTIA_set_meas_h_ch_bitfield(const uint8_t *payload, uint8_t size) 
 
 ctia_status_t cTIA_set_exclusive_meas_l_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT) return CTIA_UNAVAILABLE;
+	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
 
 	memset(ctia_state.active_meas_l_ch_bitfield, 0x00, sizeof(ctia_state.active_meas_l_ch_bitfield));
 
@@ -85,7 +87,7 @@ ctia_status_t cTIA_set_exclusive_meas_l_ch(uint8_t channel) {
 
 ctia_status_t cTIA_set_meas_l_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT) return CTIA_UNAVAILABLE;
+	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -103,7 +105,7 @@ ctia_status_t cTIA_set_meas_l_ch(uint8_t channel) {
 
 ctia_status_t cTIA_set_meas_l_ch_bitfield(const uint8_t *payload, uint8_t size) {
 
-	if (size == 0) return CTIA_INVALID_PARAMETER;
+	if (payload == NULL || size == 0) return CTIA_INVALID_PARAMETER;
 
 	memset(ctia_state.active_meas_l_ch_bitfield, 0x00, sizeof(ctia_state.active_meas_l_ch_bitfield));
 	memcpy(ctia_state.active_meas_l_ch_bitfield, payload, size);
@@ -119,7 +121,7 @@ ctia_status_t cTIA_set_meas_l_ch_bitfield(const uint8_t *payload, uint8_t size) 
 
 ctia_status_t cTIA_set_exclusive_stim_ch(uint8_t channel) {
 
-	if (channel > STIM_CH_COUNT) return CTIA_UNAVAILABLE;
+	if (channel > STIM_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
 
 	memset(ctia_state.active_stim_ch_bitfield, 0x00, sizeof(ctia_state.active_stim_ch_bitfield));
 
@@ -138,7 +140,7 @@ ctia_status_t cTIA_set_exclusive_stim_ch(uint8_t channel) {
 
 ctia_status_t cTIA_set_stim_ch(uint8_t channel) {
 
-	if (channel > STIM_CH_COUNT) return CTIA_UNAVAILABLE;
+	if (channel > STIM_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -156,7 +158,7 @@ ctia_status_t cTIA_set_stim_ch(uint8_t channel) {
 
 ctia_status_t cTIA_set_stim_ch_bitfield(const uint8_t *payload, uint8_t size) {
 
-	if (size == 0) return CTIA_INVALID_PARAMETER;
+	if (payload == NULL || size == 0) return CTIA_INVALID_PARAMETER;
 
 	memset(ctia_state.active_stim_ch_bitfield, 0x00, sizeof(ctia_state.active_stim_ch_bitfield));
 	memcpy(ctia_state.active_stim_ch_bitfield, payload, size);
@@ -224,7 +226,7 @@ ctia_status_t cTIA_set_ext_stim_ch(uint8_t channel) {
 ctia_status_t cTIA_set_ext_stim_ch_bitfield(const uint8_t *payload, uint8_t size) {
 
 	if (size > (1 + (EXT_STIM_CH_COUNT / 8)) || size == 0) return CTIA_UNAVAILABLE;
-	if (!payload) return CTIA_INVALID_PARAMETER;
+	if (payload == NULL) return CTIA_INVALID_PARAMETER;
 
 	ctia_status_t status;
 
@@ -247,7 +249,7 @@ ctia_status_t cTIA_set_ext_stim_ch_bitfield(const uint8_t *payload, uint8_t size
 
 ctia_status_t cTIA_clear_meas_h_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT) return CTIA_UNAVAILABLE;
+	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
 
 		uint8_t index = (channel - 1) / 8;
 		uint8_t bit_pos = (channel - 1) % 8;
@@ -278,7 +280,7 @@ ctia_status_t cTIA_clear_meas_h(void) {
 
 ctia_status_t cTIA_clear_meas_l_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT) return CTIA_UNAVAILABLE;
+	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -309,7 +311,7 @@ ctia_status_t cTIA_clear_meas_l(void) {
 
 ctia_status_t cTIA_clear_stim_ch(uint8_t channel) {
 
-	if (channel > STIM_CH_COUNT) return CTIA_UNAVAILABLE;
+	if (channel > STIM_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -383,4 +385,134 @@ ctia_status_t cTIA_clear_ext_stim(void) {
 		}
 
 		return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_device_id(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	uint16_t id = DEVICE_ID;
+	memcpy(buffer, &id, sizeof(id));
+	*size = sizeof(id);
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_device_name(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	const char *device_name_str = DEVICE_NAME_STRING;
+	uint8_t len = strlen(device_name_str);
+
+	memcpy(buffer, device_name_str, len);
+	*size = (uint8_t)len;
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_fw_build_date(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	const char *date_str = BUILD_DATE;
+	uint8_t len = strlen(date_str);
+
+	memcpy(buffer, date_str, len);
+	*size = (uint8_t)len;
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_fw_build_time(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	const char *time_str = BUILD_TIME;
+	uint8_t len = strlen(time_str);
+
+	memcpy(buffer, time_str, len);
+	*size = (uint8_t)len;
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_fw_version(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	const char *fw_str = FW_VERSION_STRING;
+	uint8_t len = strlen(fw_str);
+
+	memcpy(buffer, fw_str, len);
+	*size = (uint8_t)len;
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_meas_h_bitfield(uint8_t *bitfield, uint8_t *size) {
+
+    if (bitfield == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+    memcpy(bitfield, ctia_state.active_meas_h_ch_bitfield, sizeof(ctia_state.active_meas_h_ch_bitfield));
+
+    *size = sizeof(ctia_state.active_meas_h_ch_bitfield);
+    return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_meas_l_bitfield(uint8_t *bitfield, uint8_t *size) {
+
+    if (bitfield == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+    memcpy(bitfield, ctia_state.active_meas_l_ch_bitfield, sizeof(ctia_state.active_meas_l_ch_bitfield));
+
+    *size = sizeof(ctia_state.active_meas_l_ch_bitfield);
+    return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_stim_bitfield(uint8_t *bitfield, uint8_t *size) {
+
+    if (bitfield == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+    memcpy(bitfield, ctia_state.active_stim_ch_bitfield, sizeof(ctia_state.active_stim_ch_bitfield));
+
+    *size = sizeof(ctia_state.active_stim_ch_bitfield);
+    return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_ext_stim_bitfield(uint8_t *bitfield, uint8_t *size) {
+
+    if (bitfield == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+    memcpy(bitfield, ctia_state.active_ext_stim_ch_bitfield, sizeof(ctia_state.active_ext_stim_ch_bitfield));
+
+    *size = sizeof(ctia_state.active_ext_stim_ch_bitfield);
+    return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_ext_probe_in_state(uint8_t *state) {
+
+	if (state == NULL) return CTIA_INVALID_PARAMETER;
+
+	*state = ctia_state.ext_probe_in_state;
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_ext_trigger_state(uint8_t *state) {
+
+	if (state == NULL) return CTIA_INVALID_PARAMETER;
+
+	*state = ctia_state.ext_trigger_state;
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_uart_transmit(uint8_t *buffer, uint8_t size) {
+
+	if (buffer == NULL || size == 0) return CTIA_INVALID_PARAMETER;
+
+	HAL_UART_Transmit(&huart1, buffer, size, 1000);
+
+	return CTIA_SUCCESS;
 }

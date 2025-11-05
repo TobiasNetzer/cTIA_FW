@@ -101,7 +101,11 @@ void Error_Handler(void);
 #define SHIFT_REG_ERR_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
+#define DEVICE_ID 0xA101
+#define DEVICE_NAME_STRING "compact Test Interface Adapter"
+#define FW_VERSION_STRING "0.1.1"
+#define BUILD_DATE __DATE__
+#define BUILD_TIME __TIME__
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
