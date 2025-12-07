@@ -25,10 +25,6 @@ HAL_StatusTypeDef tlc6c5816_set_exclusive_output_channel(uint8_t channel) {
 
     shift_reg_data[byte_index] = (1 << bit_index);
 
-    HAL_GPIO_WritePin(SHIFT_REG_CLR_GPIO_Port, SHIFT_REG_CLR_Pin, GPIO_PIN_RESET);
-    HAL_Delay(5);
-    HAL_GPIO_WritePin(SHIFT_REG_CLR_GPIO_Port, SHIFT_REG_CLR_Pin, GPIO_PIN_SET);
-
     if (HAL_SPI_Transmit(&hspi1, shift_reg_data, SPI_FRAME_SIZE, 100) != HAL_OK) return HAL_ERROR;
 
     return HAL_OK;
@@ -39,10 +35,6 @@ HAL_StatusTypeDef tlc6c5816_set_output_channel_bitfield(const uint8_t *bitfield,
 	uint8_t shift_reg_data[SPI_FRAME_SIZE] = {0};
 	uint8_t index = SPI_FRAME_SIZE;
 	uint8_t bitfield_index = 0;
-
-	HAL_GPIO_WritePin(SHIFT_REG_CLR_GPIO_Port, SHIFT_REG_CLR_Pin, GPIO_PIN_RESET);
-	HAL_Delay(5);
-	HAL_GPIO_WritePin(SHIFT_REG_CLR_GPIO_Port, SHIFT_REG_CLR_Pin, GPIO_PIN_SET);
 
 	if (size > (MAX_CH_COUNT / 8) || size == 0) return HAL_ERROR;
 	if (!bitfield) return HAL_ERROR;

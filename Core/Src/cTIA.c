@@ -25,6 +25,7 @@ ctia_status_t cTIA_set_exclusive_meas_h_ch(uint8_t channel) {
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_exclusive_output_channel(channel);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_RESET);
@@ -43,6 +44,7 @@ ctia_status_t cTIA_set_meas_h_ch(uint8_t channel) {
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_meas_h_ch_bitfield, sizeof(ctia_state.active_meas_h_ch_bitfield));
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_RESET);
@@ -59,6 +61,7 @@ ctia_status_t cTIA_set_meas_h_ch_bitfield(const uint8_t *payload, uint8_t size) 
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_meas_h_ch_bitfield, sizeof(ctia_state.active_meas_h_ch_bitfield));
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_RESET);
@@ -78,6 +81,7 @@ ctia_status_t cTIA_set_exclusive_meas_l_ch(uint8_t channel) {
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_exclusive_output_channel(channel);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_RESET);
@@ -96,6 +100,7 @@ ctia_status_t cTIA_set_meas_l_ch(uint8_t channel) {
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_meas_l_ch_bitfield, sizeof(ctia_state.active_meas_l_ch_bitfield));
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_RESET);
@@ -112,6 +117,7 @@ ctia_status_t cTIA_set_meas_l_ch_bitfield(const uint8_t *payload, uint8_t size) 
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_meas_l_ch_bitfield, sizeof(ctia_state.active_meas_l_ch_bitfield));
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_RESET);
@@ -131,6 +137,7 @@ ctia_status_t cTIA_set_exclusive_stim_ch(uint8_t channel) {
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_exclusive_output_channel(channel);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_RESET);
@@ -149,6 +156,7 @@ ctia_status_t cTIA_set_stim_ch(uint8_t channel) {
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_stim_ch_bitfield, sizeof(ctia_state.active_stim_ch_bitfield));
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_RESET);
@@ -165,6 +173,7 @@ ctia_status_t cTIA_set_stim_ch_bitfield(const uint8_t *payload, uint8_t size) {
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_stim_ch_bitfield, sizeof(ctia_state.active_stim_ch_bitfield));
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_RESET);
@@ -220,6 +229,8 @@ ctia_status_t cTIA_set_ext_stim_ch(uint8_t channel) {
 		}
 	}
 
+	HAL_Delay(5); // Make sure Relay has enough time to switch
+
 	return CTIA_SUCCESS;
 }
 
@@ -234,15 +245,24 @@ ctia_status_t cTIA_set_ext_stim_ch_bitfield(const uint8_t *payload, uint8_t size
 
 	for (uint8_t byte = 0; byte < size; byte++) {
 		for (uint8_t bit = 0; bit < 8; bit++) {
-			if (payload[byte] & (1 << bit)) {
-				status = cTIA_set_ext_stim_ch(byte * 8 + bit + 1);
-				if (status != CTIA_SUCCESS) return status;
-			} else {
+			if (!(payload[byte] & (1 << bit))) {
 				status = cTIA_clear_ext_stim_ch(byte * 8 + bit + 1);
-				if (status == CTIA_UNAVAILABLE) continue; // Since data is transmitted as uint8_t, the return parameter CTIA_UNAVAILABLE is inevitable because we have no way of telling how many bits are "valid".
+				if (status == CTIA_UNAVAILABLE) continue;
+				// Since data is transmitted as uint8_t, the return parameter CTIA_UNAVAILABLE is
+				// inevitable because we have no way of telling how many bits are "valid".
+				//if (status != CTIA_SUCCESS) return status;
 			}
 		}
 	}
+
+	for (uint8_t byte = 0; byte < size; byte++) {
+			for (uint8_t bit = 0; bit < 8; bit++) {
+				if (payload[byte] & (1 << bit)) {
+					status = cTIA_set_ext_stim_ch(byte * 8 + bit + 1);
+					if (status != CTIA_SUCCESS) return status;
+				}
+			}
+		}
 
 	return CTIA_SUCCESS;
 }
@@ -258,6 +278,7 @@ ctia_status_t cTIA_clear_meas_h_ch(uint8_t channel) {
 
 		HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_RESET);
+		HAL_Delay(5);
 		ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_meas_h_ch_bitfield, sizeof(ctia_state.active_meas_h_ch_bitfield));
 		HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_RESET);
@@ -271,6 +292,7 @@ ctia_status_t cTIA_clear_meas_h(void) {
 
 		HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_RESET);
+		HAL_Delay(5);
 		ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_meas_h_ch_bitfield, sizeof(ctia_state.active_meas_h_ch_bitfield));
 		HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_RESET);
@@ -289,6 +311,7 @@ ctia_status_t cTIA_clear_meas_l_ch(uint8_t channel) {
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_meas_l_ch_bitfield, sizeof(ctia_state.active_meas_l_ch_bitfield));
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_RESET);
@@ -302,6 +325,7 @@ ctia_status_t cTIA_clear_meas_l(void) {
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_meas_l_ch_bitfield, sizeof(ctia_state.active_meas_l_ch_bitfield));
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_RESET);
@@ -320,6 +344,7 @@ ctia_status_t cTIA_clear_stim_ch(uint8_t channel) {
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_stim_ch_bitfield, sizeof(ctia_state.active_stim_ch_bitfield));
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_RESET);
@@ -333,6 +358,7 @@ ctia_status_t cTIA_clear_stim(void) {
 
 	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
 	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_stim_ch_bitfield, sizeof(ctia_state.active_stim_ch_bitfield));
 	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_RESET);
@@ -367,6 +393,8 @@ ctia_status_t cTIA_clear_ext_stim_ch(uint8_t channel) {
 			break;
 		}
 	}
+
+	HAL_Delay(5); // Make sure Relay has enough time to switch
 
 	return CTIA_SUCCESS;
 }
