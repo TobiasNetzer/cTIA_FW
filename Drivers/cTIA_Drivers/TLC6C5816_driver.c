@@ -16,9 +16,9 @@ HAL_StatusTypeDef tlc6c5816_set_exclusive_output_channel(uint8_t channel) {
 
 	uint8_t shift_reg_data[SPI_FRAME_SIZE] = {0};
 
-    uint8_t chip_index = channel / MAX_CH_PER_CHIP; // 16 CH per chip
+    uint8_t chip_index = !(channel / MAX_CH_PER_CHIP); // 16 CH per chip (invert since byte order is MSByte first)
     uint8_t chip_channel = channel % MAX_CH_PER_CHIP;  // find which channel (2 per chip)
-    uint8_t data_byte_index = chip_channel / 8;  // 0 or 1 -> 16 CH stored in 2 bytes, check if bit is located in the High or Low-Byte
+    uint8_t data_byte_index = !(chip_channel / 8);  // 0 or 1 -> 16 CH stored in 2 bytes, check if bit is located in the High or Low-Byte (invert since byte order is MSByte first)
     uint8_t bit_index = chip_channel % 8;
 
     uint8_t byte_index = (chip_index * BYTES_PER_CHIP) + 1 + data_byte_index;
