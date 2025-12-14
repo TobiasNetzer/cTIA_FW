@@ -327,6 +327,27 @@ void handle_command(cmd_frame_t *frame) {
 		}
 
 		/** GET CMD **/
+		case GET_AVAILABLE_MEAS_CH: {
+			status = cTIA_get_available_meas_channels(frame->payload, &frame->payload_size);
+			frame->command = RESP_AVAILABLE_MEAS_CH;
+			break;
+		}
+
+		/** GET CMD **/
+		case GET_AVAILABLE_STIM_CH: {
+			status = cTIA_get_available_stim_channels(frame->payload, &frame->payload_size);
+			frame->command = RESP_AVAILABLE_STIM_CH;
+			break;
+		}
+
+		/** GET CMD **/
+		case GET_AVAILABLE_EXT_STIM_CH: {
+			status = cTIA_get_available_ext_stim_channels(frame->payload, &frame->payload_size);
+			frame->command = RESP_AVAILABLE_EXT_STIM_CH;
+			break;
+		}
+
+		/** GET CMD **/
 		case GET_BITFIELD_MEAS_H: {
 			status = cTIA_get_meas_h_bitfield(frame->payload, &frame->payload_size);
 			frame->command = RESP_BITFIELD_MEAS_H;

@@ -461,6 +461,54 @@ ctia_status_t cTIA_get_ext_probe_in_state(uint8_t *state);
  */
 ctia_status_t cTIA_get_ext_trigger_state(uint8_t *state);
 
+/**
+ * @brief  Retrieves the available MEAS channels.
+ *
+ * This function reads the available number of MEAS channels from the CTIA hardware
+ * and stores it in the provided buffer. The actual number of bytes written
+ * is returned through the @p size parameter.
+ *
+ * @param[out] buffer Pointer to a buffer where the channel count will be stored.
+ * @param[out] size   Pointer to a variable that receives the number of bytes
+ *                    written into @p buffer.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   A pointer is NULL.
+ */
+ctia_status_t cTIA_get_available_meas_channels(uint8_t *buffer, uint8_t *size);
+
+/**
+ * @brief  Retrieves the available STIM channels.
+ *
+ * This function reads the available number of STIM channels from the CTIA hardware
+ * and stores it in the provided buffer. The actual number of bytes written
+ * is returned through the @p size parameter.
+ *
+ * @param[out] buffer Pointer to a buffer where the channel count will be stored.
+ * @param[out] size   Pointer to a variable that receives the number of bytes
+ *                    written into @p buffer.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   A pointer is NULL.
+ */
+ctia_status_t cTIA_get_available_stim_channels(uint8_t *buffer, uint8_t *size);
+
+/**
+ * @brief  Retrieves the available EXT STIM channels.
+ *
+ * This function reads the available number of EXT STIM channels from the CTIA hardware
+ * and stores it in the provided buffer. The actual number of bytes written
+ * is returned through the @p size parameter.
+ *
+ * @param[out] buffer Pointer to a buffer where the channel count will be stored.
+ * @param[out] size   Pointer to a variable that receives the number of bytes
+ *                    written into @p buffer.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   A pointer is NULL.
+ */
+ctia_status_t cTIA_get_available_ext_stim_channels(uint8_t *buffer, uint8_t *size);
+
 ctia_status_t cTIA_uart_transmit(uint8_t *buffer, uint8_t size);
 
 #endif /* CTIA_H_ */

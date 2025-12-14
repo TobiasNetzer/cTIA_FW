@@ -536,6 +536,38 @@ ctia_status_t cTIA_get_ext_trigger_state(uint8_t *state) {
 	return CTIA_SUCCESS;
 }
 
+ctia_status_t cTIA_get_available_meas_channels(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	buffer[0] = MEAS_CH_COUNT;
+	*size = 1;
+
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_available_stim_channels(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	buffer[0] = STIM_CH_COUNT;
+	*size = 1;
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_available_ext_stim_channels(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	buffer[0] = EXT_STIM_CH_COUNT;
+	*size = 1;
+
+
+	return CTIA_SUCCESS;
+}
+
 ctia_status_t cTIA_uart_transmit(uint8_t *buffer, uint8_t size) {
 
 	if (buffer == NULL || size == 0) return CTIA_INVALID_PARAMETER;

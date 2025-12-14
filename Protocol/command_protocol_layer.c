@@ -33,7 +33,7 @@ static ctia_status_t parse_cmd(uint8_t *input_buffer, uint8_t size) {
 		uint8_t received_crc8 = input_buffer[size - 1];
 		uint8_t crc8 = (uint8_t) HAL_CRC_Calculate(&hcrc, (uint32_t *) &input_buffer[2], (uint32_t) size - 3);
 
-		if (received_crc8 != crc8) return CTIA_CRC_MISSMATCH;
+		if (received_crc8 != crc8) return CTIA_CRC_MISMATCH;
 
 	}
 
