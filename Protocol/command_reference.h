@@ -72,6 +72,7 @@ typedef enum _clr_cmd_s {
 	CLR_STIM,
 	CLR_EXT_STIM_CH,
 	CLR_EXT_STIM,
+	CLR_ALL_RELAYS,
 	CLR_END = 0x03FF
 } clr_cmd_t;
 
@@ -109,7 +110,7 @@ typedef enum _exec_cmd_s {
 } exec_cmd_t;
 
 typedef enum _dbg_cmd_s {
-	EXAMPLE_DBG_CMD	= 0x0701,
+	DBG_ENTER_BOOTLOADER	= 0x0701,
 	DBG_END = 0x07FF
 } dbg_cmd_t;
 

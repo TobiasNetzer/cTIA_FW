@@ -17,7 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <cTIA.h>
+#include "cTIA.h"
 #include "main.h"
 #include "crc.h"
 #include "i2c.h"
@@ -104,6 +104,7 @@ int main(void)
   HAL_GPIO_WritePin(SHIFT_REG_EN_STIM_GPIO_Port, SHIFT_REG_EN_STIM_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(SHIFT_REG_EN_MEAS_H_GPIO_Port, SHIFT_REG_EN_MEAS_H_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(SHIFT_REG_EN_MEAS_L_GPIO_Port, SHIFT_REG_EN_MEAS_L_Pin, GPIO_PIN_RESET);
+  cTIA_clear_all_relays();
 
   /* USER CODE END 2 */
 

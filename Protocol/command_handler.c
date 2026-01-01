@@ -8,6 +8,7 @@
 #include "command_handler.h"
 #include "cTIA.h"
 #include "command_reference.h"
+#include "bootloader.h"
 #include <stdbool.h>
 
 static inline void cmd_frame_response_ok(cmd_frame_t *frame) {
@@ -291,6 +292,13 @@ void handle_command(cmd_frame_t *frame) {
 			break;
 		}
 
+		/** CLR CMD **/
+		case CLR_ALL_RELAYS: {
+			status = cTIA_clear_all_relays();
+			cmd_frame_response_ok(frame);
+			break;
+		}
+
 		/** GET CMD **/
 		case GET_DEVICE_ID: {
 			status = cTIA_get_device_id(frame->payload, &frame->payload_size);
@@ -398,6 +406,15 @@ void handle_command(cmd_frame_t *frame) {
 				goto error;
 			}
 			status = cTIA_uart_transmit(frame->payload, frame->payload_size);
+			cmd_frame_response_ok(frame);
+			break;
+		}
+
+		/** UART CMD **/
+		case DBG_ENTER_BOOTLOADER: {
+			JumpToBootloader();
+
+			// should never run
 			cmd_frame_response_ok(frame);
 			break;
 		}

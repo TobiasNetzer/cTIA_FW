@@ -292,6 +292,16 @@ ctia_status_t cTIA_clear_ext_stim_ch(uint8_t channel);
 ctia_status_t cTIA_clear_ext_stim(void);
 
 /**
+ * @brief  Clears all relay states.
+ *
+ * This function clears all channels and resets the internal bitfields.
+ *
+ *
+ * @retval CTIA_SUCCESS         Operation completed successfully.
+ */
+ctia_status_t cTIA_clear_all_relays(void);
+
+/**
  * @brief  Retrieves the device ID.
  *
  * This function reads the unique device identifier from the CTIA hardware
