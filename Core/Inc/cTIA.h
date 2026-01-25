@@ -12,16 +12,13 @@
 #include "command_reference.h"
 #include "TLC6C5816_driver.h"
 
-/* These should be saved in EEPROM later for configuring custom units! */
-#define STIM_CH_COUNT 16
-#define MEAS_CH_COUNT 32
-#define EXT_STIM_CH_COUNT 4
+#define EXT_STIM_CH_MAX_COUNT 4
 
 typedef struct _ctia_state_s {
 	uint8_t active_stim_ch_bitfield[MAX_CH_COUNT / 8];
 	uint8_t active_meas_h_ch_bitfield[MAX_CH_COUNT / 8];
 	uint8_t active_meas_l_ch_bitfield[MAX_CH_COUNT / 8];
-	uint8_t active_ext_stim_ch_bitfield[1 + (EXT_STIM_CH_COUNT / 8)];
+	uint8_t active_ext_stim_ch_bitfield[1 + (EXT_STIM_CH_MAX_COUNT / 8)];
 	uint8_t ext_probe_in_state;
 	uint8_t ext_trigger_state;
 } ctia_state_t;
@@ -334,6 +331,22 @@ ctia_status_t cTIA_get_device_id(uint8_t *buffer, uint8_t *size);
 ctia_status_t cTIA_get_device_name(uint8_t *buffer, uint8_t *size);
 
 /**
+ * @brief  Retrieves the serial number.
+ *
+ * This function reads the serial number from the CTIA hardware
+ * and stores it in the provided buffer. The actual number of bytes written
+ * is returned through the @p size parameter.
+ *
+ * @param[out] buffer Pointer to a buffer where the serial number will be stored.
+ * @param[out] size   Pointer to a variable that receives the number of bytes
+ *                    written into @p buffer.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   A pointer is NULL.
+ */
+ctia_status_t cTIA_get_serial_number(uint8_t *buffer, uint8_t *size);
+
+/**
  * @brief  Retrieves the firmware build date.
  *
  * This function reads the firmware build date from the CTIA hardware
@@ -518,6 +531,54 @@ ctia_status_t cTIA_get_available_stim_channels(uint8_t *buffer, uint8_t *size);
  * @retval CTIA_INVALID_PARAMETER   A pointer is NULL.
  */
 ctia_status_t cTIA_get_available_ext_stim_channels(uint8_t *buffer, uint8_t *size);
+
+/**
+ * @brief  Configures the device's serial number.
+ *
+ * This function reads a 32-bit serial number from the provided payload,
+ * updates the internal device configuration, and persists the change to
+ * non-volatile storage.
+ *
+ * The input buffer must contain exactly 4 bytes representing the new
+ * serial number in little-endian format.
+ *
+ * @param[in]  buffer Pointer to a buffer containing the 4-byte serial number.
+ * @param[in]  size Pointer to a variable holding the payload size on input.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   A pointer is NULL or the size is not 4.
+ */
+ctia_status_t cTIA_conf_serial_number(uint8_t *buffer, uint8_t *size);
+
+/**
+ * @brief  Configures the device's available MEAS channels.
+ *
+ * @param[in]  channel count uint8_t.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   count is > MAX_CH_COUNT.
+ */
+ctia_status_t cTIA_conf_available_meas_ch(uint8_t channel_count);
+
+/**
+ * @brief  Configures the device's available STIM channels.
+ *
+ * @param[in]  channel count uint8_t.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   count is > MAX_CH_COUNT.
+ */
+ctia_status_t cTIA_conf_available_stim_ch(uint8_t channel_count);
+
+/**
+ * @brief  Configures the device's available EXT STIM channels.
+ *
+ * @param[in]  channel count uint8_t.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   count is > MAX_STIM_CH_COUNT.
+ */
+ctia_status_t cTIA_conf_available_ext_stim_ch(uint8_t channel_count);
 
 ctia_status_t cTIA_uart_transmit(uint8_t *buffer, uint8_t size);
 

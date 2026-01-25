@@ -9,14 +9,16 @@
 #include "main.h"
 #include <string.h>
 #include <stdbool.h>
+#include "device_config.h"
 
 extern UART_HandleTypeDef huart1;
+extern device_config_t cTIA_config;
 
 static ctia_state_t ctia_state = {0};
 
 ctia_status_t cTIA_set_exclusive_meas_h_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
+	if (channel > cTIA_config.meas_ch_count || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t old_bitfield[sizeof(ctia_state.active_meas_h_ch_bitfield)];
 	memcpy(old_bitfield, ctia_state.active_meas_h_ch_bitfield, sizeof(old_bitfield));
@@ -42,7 +44,7 @@ ctia_status_t cTIA_set_exclusive_meas_h_ch(uint8_t channel) {
 
 ctia_status_t cTIA_set_meas_h_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
+	if (channel > cTIA_config.meas_ch_count || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -92,7 +94,7 @@ ctia_status_t cTIA_set_meas_h_ch_bitfield(const uint8_t *payload, uint8_t size) 
 
 ctia_status_t cTIA_set_exclusive_meas_l_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
+	if (channel > cTIA_config.meas_ch_count || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t old_bitfield[sizeof(ctia_state.active_meas_l_ch_bitfield)];
 	memcpy(old_bitfield, ctia_state.active_meas_l_ch_bitfield, sizeof(old_bitfield));
@@ -118,7 +120,7 @@ ctia_status_t cTIA_set_exclusive_meas_l_ch(uint8_t channel) {
 
 ctia_status_t cTIA_set_meas_l_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
+	if (channel > cTIA_config.meas_ch_count || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -168,7 +170,7 @@ ctia_status_t cTIA_set_meas_l_ch_bitfield(const uint8_t *payload, uint8_t size) 
 
 ctia_status_t cTIA_set_exclusive_stim_ch(uint8_t channel) {
 
-	if (channel > STIM_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
+	if (channel > cTIA_config.stim_ch_count || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t old_bitfield[sizeof(ctia_state.active_stim_ch_bitfield)];
 	memcpy(old_bitfield, ctia_state.active_stim_ch_bitfield, sizeof(old_bitfield));
@@ -194,7 +196,7 @@ ctia_status_t cTIA_set_exclusive_stim_ch(uint8_t channel) {
 
 ctia_status_t cTIA_set_stim_ch(uint8_t channel) {
 
-	if (channel > STIM_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
+	if (channel > cTIA_config.stim_ch_count || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -265,7 +267,7 @@ ctia_status_t cTIA_set_ext_trigger(uint8_t state) {
 
 ctia_status_t cTIA_set_ext_stim_ch(uint8_t channel) {
 
-	if (channel > EXT_STIM_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
+	if (channel > cTIA_config.ext_stim_ch_count || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -298,7 +300,7 @@ ctia_status_t cTIA_set_ext_stim_ch(uint8_t channel) {
 
 ctia_status_t cTIA_set_ext_stim_ch_bitfield(const uint8_t *payload, uint8_t size) {
 
-	if (size > (1 + (EXT_STIM_CH_COUNT / 8)) || size == 0) return CTIA_UNAVAILABLE;
+	if (size > (1 + (cTIA_config.ext_stim_ch_count / 8)) || size == 0) return CTIA_UNAVAILABLE;
 	if (payload == NULL) return CTIA_INVALID_PARAMETER;
 
 	ctia_status_t status;
@@ -331,7 +333,7 @@ ctia_status_t cTIA_set_ext_stim_ch_bitfield(const uint8_t *payload, uint8_t size
 
 ctia_status_t cTIA_clear_meas_h_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
+	if (channel > cTIA_config.meas_ch_count || channel == 0) return CTIA_UNAVAILABLE;
 
 		uint8_t index = (channel - 1) / 8;
 		uint8_t bit_pos = (channel - 1) % 8;
@@ -361,7 +363,7 @@ ctia_status_t cTIA_clear_meas_h(void) {
 
 ctia_status_t cTIA_clear_meas_l_ch(uint8_t channel) {
 
-	if (channel > MEAS_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
+	if (channel > cTIA_config.meas_ch_count || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -391,7 +393,7 @@ ctia_status_t cTIA_clear_meas_l(void) {
 
 ctia_status_t cTIA_clear_stim_ch(uint8_t channel) {
 
-	if (channel > STIM_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
+	if (channel > cTIA_config.stim_ch_count || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -421,7 +423,7 @@ ctia_status_t cTIA_clear_stim(void) {
 
 ctia_status_t cTIA_clear_ext_stim_ch(uint8_t channel) {
 
-	if (channel > EXT_STIM_CH_COUNT || channel == 0) return CTIA_UNAVAILABLE;
+	if (channel > cTIA_config.ext_stim_ch_count || channel == 0) return CTIA_UNAVAILABLE;
 
 	uint8_t index = (channel - 1) / 8;
 	uint8_t bit_pos = (channel - 1) % 8;
@@ -498,6 +500,16 @@ ctia_status_t cTIA_get_device_name(uint8_t *buffer, uint8_t *size) {
 
 	memcpy(buffer, device_name_str, len);
 	*size = (uint8_t)len;
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_serial_number(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	memcpy(buffer, &cTIA_config.serial_number, sizeof(uint32_t));
+	*size = sizeof(uint32_t);
 
 	return CTIA_SUCCESS;
 }
@@ -603,7 +615,7 @@ ctia_status_t cTIA_get_available_meas_channels(uint8_t *buffer, uint8_t *size) {
 
 	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
 
-	buffer[0] = MEAS_CH_COUNT;
+	buffer[0] = cTIA_config.meas_ch_count;
 	*size = 1;
 
 
@@ -614,7 +626,7 @@ ctia_status_t cTIA_get_available_stim_channels(uint8_t *buffer, uint8_t *size) {
 
 	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
 
-	buffer[0] = STIM_CH_COUNT;
+	buffer[0] = cTIA_config.stim_ch_count;
 	*size = 1;
 
 	return CTIA_SUCCESS;
@@ -624,9 +636,54 @@ ctia_status_t cTIA_get_available_ext_stim_channels(uint8_t *buffer, uint8_t *siz
 
 	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
 
-	buffer[0] = EXT_STIM_CH_COUNT;
+	buffer[0] = cTIA_config.ext_stim_ch_count;
 	*size = 1;
 
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_conf_serial_number(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+	if (*size != sizeof(uint32_t)) return CTIA_INVALID_PARAMETER;
+
+	memcpy(&cTIA_config.serial_number, buffer, sizeof(uint32_t));
+
+	device_config_save(&cTIA_config);
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_conf_available_meas_ch(uint8_t channel_count) {
+
+	if (channel_count > MAX_CH_COUNT) return CTIA_INVALID_PARAMETER;
+
+	cTIA_config.meas_ch_count = channel_count;
+
+	device_config_save(&cTIA_config);
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_conf_available_stim_ch(uint8_t channel_count) {
+
+	if (channel_count > MAX_CH_COUNT) return CTIA_INVALID_PARAMETER;
+
+	cTIA_config.stim_ch_count = channel_count;
+
+	device_config_save(&cTIA_config);
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_conf_available_ext_stim_ch(uint8_t channel_count) {
+
+	if (channel_count > EXT_STIM_CH_MAX_COUNT) return CTIA_INVALID_PARAMETER;
+
+	cTIA_config.ext_stim_ch_count = channel_count;
+
+	device_config_save(&cTIA_config);
 
 	return CTIA_SUCCESS;
 }

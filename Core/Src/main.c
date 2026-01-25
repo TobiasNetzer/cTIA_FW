@@ -17,7 +17,6 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "cTIA.h"
 #include "main.h"
 #include "crc.h"
 #include "i2c.h"
@@ -28,7 +27,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "cTIA.h"
 #include "command_handler.h"
+#include "device_config.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,7 +50,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+device_config_t cTIA_config;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -105,6 +106,8 @@ int main(void)
   HAL_GPIO_WritePin(SHIFT_REG_EN_MEAS_H_GPIO_Port, SHIFT_REG_EN_MEAS_H_Pin, GPIO_PIN_RESET);
   HAL_GPIO_WritePin(SHIFT_REG_EN_MEAS_L_GPIO_Port, SHIFT_REG_EN_MEAS_L_Pin, GPIO_PIN_RESET);
   cTIA_clear_all_relays();
+
+  device_config_load(&cTIA_config);
 
   /* USER CODE END 2 */
 

@@ -8,7 +8,7 @@
 #ifndef COMMAND_HANDLER_H_
 #define COMMAND_HANDLER_H_
 
-#include <command_protocol_layer.h>
+#include "command_protocol_layer.h"
 
 void handle_command(cmd_frame_t* frame);
 

@@ -314,6 +314,13 @@ void handle_command(cmd_frame_t *frame) {
 		}
 
 		/** GET CMD **/
+		case GET_SERIAL_NUMBER: {
+			status = cTIA_get_serial_number(frame->payload, &frame->payload_size);
+			frame->command = RESP_SERIAL_NUMBER;
+			break;
+		}
+
+		/** GET CMD **/
 		case GET_FW_BUILD_DATE: {
 			status = cTIA_get_fw_build_date(frame->payload, &frame->payload_size);
 			frame->command = RESP_FW_BUILD_DATE;
@@ -399,6 +406,34 @@ void handle_command(cmd_frame_t *frame) {
 			break;
 		}
 
+		/** CONF CMD **/
+		case CONF_SERIAL_NUMBER: {
+			status = cTIA_conf_serial_number(frame->payload, &frame->payload_size);
+			cmd_frame_response_ok(frame);
+			break;
+		}
+
+		/** CONF CMD **/
+		case CONF_AVAILABLE_MEAS_CH: {
+			status = cTIA_conf_available_meas_ch(frame->payload[0]);
+			cmd_frame_response_ok(frame);
+			break;
+		}
+
+		/** CONF CMD **/
+		case CONF_AVAILABLE_STIM_CH: {
+			status = cTIA_conf_available_stim_ch(frame->payload[0]);
+			cmd_frame_response_ok(frame);
+			break;
+		}
+
+		/** CONF CMD **/
+		case CONF_AVAILABLE_EXT_STIM_CH: {
+			status = cTIA_conf_available_ext_stim_ch(frame->payload[0]);
+			cmd_frame_response_ok(frame);
+			break;
+		}
+
 		/** UART CMD **/
 		case UART_TRANSMIT: {
 			if (frame->payload_size == 0) {
@@ -410,7 +445,7 @@ void handle_command(cmd_frame_t *frame) {
 			break;
 		}
 
-		/** UART CMD **/
+		/** DBG CMD **/
 		case DBG_ENTER_BOOTLOADER: {
 			JumpToBootloader();
 

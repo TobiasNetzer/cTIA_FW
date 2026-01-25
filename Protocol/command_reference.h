@@ -31,6 +31,7 @@ typedef enum _resp_cmd_s {
 	RESP_ERROR,
 	RESP_DEVICE_ID,
 	RESP_DEVICE_NAME,
+	RESP_SERIAL_NUMBER,
 	RESP_FW_BUILD_DATE,
 	RESP_FW_BUILD_TIME,
 	RESP_FW_VERSION,
@@ -79,6 +80,7 @@ typedef enum _clr_cmd_s {
 typedef enum _get_cmd_s {
 	GET_DEVICE_ID = 0x0401,
 	GET_DEVICE_NAME,
+	GET_SERIAL_NUMBER,
 	GET_FW_BUILD_DATE,
 	GET_FW_BUILD_TIME,
 	GET_FW_VESION,
@@ -95,7 +97,8 @@ typedef enum _get_cmd_s {
 } get_cmd_t;
 
 typedef enum _conf_cmd_s {
-	CONF_AVAILABLE_MEAS_CH = 0x0501,
+	CONF_SERIAL_NUMBER = 0x0501,
+	CONF_AVAILABLE_MEAS_CH,
 	CONF_AVAILABLE_STIM_CH,
 	CONF_AVAILABLE_EXT_STIM_CH,
 	CONF_AVAILABLE_UART,
