@@ -252,6 +252,8 @@ ctia_status_t cTIA_set_ext_probe_in(uint8_t state) {
 
 	HAL_GPIO_WritePin(EXT_PROBE_ON_GPIO_Port, EXT_PROBE_ON_Pin, ctia_state.ext_probe_in_state);
 
+	HAL_Delay(5); // Make sure Relay has enough time to switch
+
 	return CTIA_SUCCESS;
 }
 
@@ -476,6 +478,7 @@ ctia_status_t cTIA_clear_all_relays(void) {
 	cTIA_clear_meas_h();
 	cTIA_clear_meas_l();
 	cTIA_clear_ext_stim();
+	cTIA_set_ext_probe_in(0);
 
 	return CTIA_SUCCESS;
 }
