@@ -248,6 +248,8 @@ ctia_status_t cTIA_set_stim_ch_bitfield(const uint8_t *payload, uint8_t size)
 ctia_status_t cTIA_set_ext_probe_in(uint8_t state) {
 
 	if (state > 1) return CTIA_INVALID_PARAMETER;
+	if (HAL_GPIO_ReadPin(PROBE_BTN_INT_GPIO_Port, PROBE_BTN_INT_Pin)) return CTIA_UNAVAILABLE;
+
 	ctia_state.ext_probe_in_state = state;
 
 	HAL_GPIO_WritePin(EXT_PROBE_ON_GPIO_Port, EXT_PROBE_ON_Pin, ctia_state.ext_probe_in_state);
@@ -260,6 +262,7 @@ ctia_status_t cTIA_set_ext_probe_in(uint8_t state) {
 ctia_status_t cTIA_set_ext_trigger(uint8_t state) {
 
 	if (state > 1) return CTIA_INVALID_PARAMETER;
+
 	ctia_state.ext_trigger_state = state;
 
 	HAL_GPIO_WritePin(EXT_TRIG_INT_GPIO_Port, EXT_TRIG_INT_Pin, ctia_state.ext_trigger_state);
