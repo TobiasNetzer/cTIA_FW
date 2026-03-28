@@ -52,10 +52,13 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, EXT_PROBE_ON_Pin|EXT_TRIG_ON_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, EXT_PROBE_ON_Pin|ANALOG_BUS_DETECT_ENABLE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, SHIFT_REG_G_STIM_Pin|SHIFT_REG_CLR_Pin|SHIFT_REG_EN_MEAS_H_Pin|SHIFT_REG_EN_MEAS_L_Pin
+  HAL_GPIO_WritePin(GPIOA, SHIFT_REG_CLR_H_Pin|SHIFT_REG_CLR_L_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, SHIFT_REG_G_STIM_Pin|SHIFT_REG_CLR_STIM_Pin|SHIFT_REG_EN_MEAS_H_Pin|SHIFT_REG_EN_MEAS_L_Pin
                           |SHIFT_REG_EN_STIM_Pin|SHIFT_REG_G_MEAS_H_Pin|SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
@@ -64,23 +67,23 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, SHIFT_REG_RCK_MEAS_H_Pin|SHIFT_REG_RCK_MEAS_L_Pin|SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : EXT_PROBE_ON_Pin EXT_TRIG_ON_Pin */
-  GPIO_InitStruct.Pin = EXT_PROBE_ON_Pin|EXT_TRIG_ON_Pin;
+  /*Configure GPIO pins : EXT_PROBE_ON_Pin SHIFT_REG_CLR_H_Pin SHIFT_REG_CLR_L_Pin ANALOG_BUS_DETECT_ENABLE_Pin */
+  GPIO_InitStruct.Pin = EXT_PROBE_ON_Pin|SHIFT_REG_CLR_H_Pin|SHIFT_REG_CLR_L_Pin|ANALOG_BUS_DETECT_ENABLE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : EXT_TRIG_INT_Pin */
-  GPIO_InitStruct.Pin = EXT_TRIG_INT_Pin;
+  /*Configure GPIO pin : ANALOG_BUS_DETECT_INPUT_Pin */
+  GPIO_InitStruct.Pin = ANALOG_BUS_DETECT_INPUT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(EXT_TRIG_INT_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(ANALOG_BUS_DETECT_INPUT_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : SHIFT_REG_G_STIM_Pin SHIFT_REG_CLR_Pin SHIFT_REG_EN_MEAS_H_Pin SHIFT_REG_EN_MEAS_L_Pin
+  /*Configure GPIO pins : SHIFT_REG_G_STIM_Pin SHIFT_REG_CLR_STIM_Pin SHIFT_REG_EN_MEAS_H_Pin SHIFT_REG_EN_MEAS_L_Pin
                            SHIFT_REG_EN_STIM_Pin SHIFT_REG_G_MEAS_H_Pin SHIFT_REG_G_MEAS_L_Pin SHIFT_REG_RCK_MEAS_H_Pin
                            SHIFT_REG_RCK_MEAS_L_Pin SHIFT_REG_RCK_STIM_Pin */
-  GPIO_InitStruct.Pin = SHIFT_REG_G_STIM_Pin|SHIFT_REG_CLR_Pin|SHIFT_REG_EN_MEAS_H_Pin|SHIFT_REG_EN_MEAS_L_Pin
+  GPIO_InitStruct.Pin = SHIFT_REG_G_STIM_Pin|SHIFT_REG_CLR_STIM_Pin|SHIFT_REG_EN_MEAS_H_Pin|SHIFT_REG_EN_MEAS_L_Pin
                           |SHIFT_REG_EN_STIM_Pin|SHIFT_REG_G_MEAS_H_Pin|SHIFT_REG_G_MEAS_L_Pin|SHIFT_REG_RCK_MEAS_H_Pin
                           |SHIFT_REG_RCK_MEAS_L_Pin|SHIFT_REG_RCK_STIM_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -88,11 +91,11 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PROBE_BTN_INT_Pin */
-  GPIO_InitStruct.Pin = PROBE_BTN_INT_Pin;
+  /*Configure GPIO pin : PROBE_DETECT_Pin */
+  GPIO_InitStruct.Pin = PROBE_DETECT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(PROBE_BTN_INT_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(PROBE_DETECT_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : EXT_STIM_1_ON_Pin EXT_STIM_2_ON_Pin EXT_STIM_3_ON_Pin EXT_STIM_4_ON_Pin */
   GPIO_InitStruct.Pin = EXT_STIM_1_ON_Pin|EXT_STIM_2_ON_Pin|EXT_STIM_3_ON_Pin|EXT_STIM_4_ON_Pin;

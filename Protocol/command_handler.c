@@ -190,7 +190,7 @@ void handle_command(cmd_frame_t *frame) {
 		}
 
 		/** SET CMD **/
-		case SET_EXT_TRIGGER: {
+		case SET_ANALOG_BUS_DETECT: {
 			if (frame->payload_size < 1) {
 				status = CTIA_TOO_FEW_BYTES;
 				goto error;
@@ -199,7 +199,7 @@ void handle_command(cmd_frame_t *frame) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
-			status = cTIA_set_ext_trigger(frame->payload[0]);
+			status = cTIA_set_analog_bus_detect(frame->payload[0]);
 			cmd_frame_response_ok(frame);
 			break;
 		}
@@ -434,6 +434,12 @@ void handle_command(cmd_frame_t *frame) {
 			break;
 		}
 
+		case EXECUTE_SELFTEST: {
+			status = cTIA_execute_selftest(frame->payload, &frame->payload_size);
+			frame->command = RESP_EXECUTE_SELFTEST;
+			break;
+		}
+
 		/** UART CMD **/
 		case UART_TRANSMIT: {
 			if (frame->payload_size == 0) {
@@ -447,6 +453,7 @@ void handle_command(cmd_frame_t *frame) {
 
 		/** DBG CMD **/
 		case DBG_ENTER_BOOTLOADER: {
+			cTIA_clear_all_relays();
 			JumpToBootloader();
 
 			// should never run

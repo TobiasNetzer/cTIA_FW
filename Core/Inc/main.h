@@ -59,12 +59,16 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define EXT_PROBE_ON_Pin GPIO_PIN_0
 #define EXT_PROBE_ON_GPIO_Port GPIOA
-#define EXT_TRIG_INT_Pin GPIO_PIN_0
-#define EXT_TRIG_INT_GPIO_Port GPIOB
+#define SHIFT_REG_CLR_H_Pin GPIO_PIN_4
+#define SHIFT_REG_CLR_H_GPIO_Port GPIOA
+#define SHIFT_REG_CLR_L_Pin GPIO_PIN_5
+#define SHIFT_REG_CLR_L_GPIO_Port GPIOA
+#define ANALOG_BUS_DETECT_INPUT_Pin GPIO_PIN_0
+#define ANALOG_BUS_DETECT_INPUT_GPIO_Port GPIOB
 #define SHIFT_REG_G_STIM_Pin GPIO_PIN_1
 #define SHIFT_REG_G_STIM_GPIO_Port GPIOB
-#define SHIFT_REG_CLR_Pin GPIO_PIN_2
-#define SHIFT_REG_CLR_GPIO_Port GPIOB
+#define SHIFT_REG_CLR_STIM_Pin GPIO_PIN_2
+#define SHIFT_REG_CLR_STIM_GPIO_Port GPIOB
 #define SHIFT_REG_EN_MEAS_H_Pin GPIO_PIN_10
 #define SHIFT_REG_EN_MEAS_H_GPIO_Port GPIOB
 #define SHIFT_REG_EN_MEAS_L_Pin GPIO_PIN_11
@@ -75,10 +79,10 @@ void Error_Handler(void);
 #define SHIFT_REG_G_MEAS_H_GPIO_Port GPIOB
 #define SHIFT_REG_G_MEAS_L_Pin GPIO_PIN_14
 #define SHIFT_REG_G_MEAS_L_GPIO_Port GPIOB
-#define PROBE_BTN_INT_Pin GPIO_PIN_6
-#define PROBE_BTN_INT_GPIO_Port GPIOC
-#define EXT_TRIG_ON_Pin GPIO_PIN_15
-#define EXT_TRIG_ON_GPIO_Port GPIOA
+#define PROBE_DETECT_Pin GPIO_PIN_6
+#define PROBE_DETECT_GPIO_Port GPIOC
+#define ANALOG_BUS_DETECT_ENABLE_Pin GPIO_PIN_15
+#define ANALOG_BUS_DETECT_ENABLE_GPIO_Port GPIOA
 #define EXT_STIM_1_ON_Pin GPIO_PIN_0
 #define EXT_STIM_1_ON_GPIO_Port GPIOD
 #define EXT_STIM_2_ON_Pin GPIO_PIN_1
@@ -103,7 +107,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN Private defines */
 #define DEVICE_ID 0xA101
 #define DEVICE_NAME_STRING "compact Test Interface Adapter"
-#define FW_VERSION_STRING "0.3.2"
+#define FW_VERSION_STRING "0.4.0"
 #define BUILD_DATE __DATE__
 #define BUILD_TIME __TIME__
 /* USER CODE END Private defines */

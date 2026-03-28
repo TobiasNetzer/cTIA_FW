@@ -248,7 +248,7 @@ ctia_status_t cTIA_set_stim_ch_bitfield(const uint8_t *payload, uint8_t size)
 ctia_status_t cTIA_set_ext_probe_in(uint8_t state) {
 
 	if (state > 1) return CTIA_INVALID_PARAMETER;
-	if (HAL_GPIO_ReadPin(PROBE_BTN_INT_GPIO_Port, PROBE_BTN_INT_Pin)) return CTIA_UNAVAILABLE;
+	if (HAL_GPIO_ReadPin(PROBE_DETECT_GPIO_Port, PROBE_DETECT_Pin) && state) return CTIA_UNAVAILABLE;
 
 	ctia_state.ext_probe_in_state = state;
 
@@ -259,13 +259,13 @@ ctia_status_t cTIA_set_ext_probe_in(uint8_t state) {
 	return CTIA_SUCCESS;
 }
 
-ctia_status_t cTIA_set_ext_trigger(uint8_t state) {
+ctia_status_t cTIA_set_analog_bus_detect(uint8_t state) {
 
 	if (state > 1) return CTIA_INVALID_PARAMETER;
 
-	ctia_state.ext_trigger_state = state;
+	ctia_state.analog_bus_detect_state = state;
 
-	HAL_GPIO_WritePin(EXT_TRIG_INT_GPIO_Port, EXT_TRIG_INT_Pin, ctia_state.ext_trigger_state);
+	HAL_GPIO_WritePin(ANALOG_BUS_DETECT_ENABLE_GPIO_Port, ANALOG_BUS_DETECT_ENABLE_Pin, ctia_state.analog_bus_detect_state);
 
 	return CTIA_SUCCESS;
 }
@@ -354,16 +354,13 @@ ctia_status_t cTIA_clear_meas_h_ch(uint8_t channel) {
 
 ctia_status_t cTIA_clear_meas_h(void) {
 
-		memset(ctia_state.active_meas_h_ch_bitfield, 0x00, sizeof(ctia_state.active_meas_h_ch_bitfield));
+	memset(ctia_state.active_meas_h_ch_bitfield, 0x00, sizeof(ctia_state.active_meas_h_ch_bitfield));
 
-		HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_RESET);
-		HAL_Delay(5);
-		ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_meas_h_ch_bitfield, sizeof(ctia_state.active_meas_h_ch_bitfield));
-		HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_H_GPIO_Port, SHIFT_REG_RCK_MEAS_H_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_H_GPIO_Port, SHIFT_REG_G_MEAS_H_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(SHIFT_REG_CLR_H_GPIO_Port, SHIFT_REG_CLR_H_Pin, GPIO_PIN_RESET);
+	HAL_Delay(5);
+	HAL_GPIO_WritePin(SHIFT_REG_CLR_H_GPIO_Port, SHIFT_REG_CLR_H_Pin, GPIO_PIN_SET);
 
-		return status;
+	return CTIA_SUCCESS;
 }
 
 ctia_status_t cTIA_clear_meas_l_ch(uint8_t channel) {
@@ -386,14 +383,11 @@ ctia_status_t cTIA_clear_meas_l(void) {
 
 	memset(ctia_state.active_meas_l_ch_bitfield, 0x00, sizeof(ctia_state.active_meas_l_ch_bitfield));
 
-	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(SHIFT_REG_CLR_L_GPIO_Port, SHIFT_REG_CLR_L_Pin, GPIO_PIN_RESET);
 	HAL_Delay(5);
-	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_meas_l_ch_bitfield, sizeof(ctia_state.active_meas_l_ch_bitfield));
-	HAL_GPIO_WritePin(SHIFT_REG_RCK_MEAS_L_GPIO_Port, SHIFT_REG_RCK_MEAS_L_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(SHIFT_REG_G_MEAS_L_GPIO_Port, SHIFT_REG_G_MEAS_L_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(SHIFT_REG_CLR_L_GPIO_Port, SHIFT_REG_CLR_L_Pin, GPIO_PIN_SET);
 
-	return status;
+	return CTIA_SUCCESS;
 }
 
 ctia_status_t cTIA_clear_stim_ch(uint8_t channel) {
@@ -416,14 +410,11 @@ ctia_status_t cTIA_clear_stim(void) {
 
 	memset(ctia_state.active_stim_ch_bitfield, 0x00, sizeof(ctia_state.active_stim_ch_bitfield));
 
-	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(SHIFT_REG_CLR_STIM_GPIO_Port, SHIFT_REG_CLR_STIM_Pin, GPIO_PIN_RESET);
 	HAL_Delay(5);
-	ctia_status_t status = tlc6c5816_set_output_channel_bitfield(ctia_state.active_stim_ch_bitfield, sizeof(ctia_state.active_stim_ch_bitfield));
-	HAL_GPIO_WritePin(SHIFT_REG_RCK_STIM_GPIO_Port, SHIFT_REG_RCK_STIM_Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(SHIFT_REG_CLR_STIM_GPIO_Port, SHIFT_REG_CLR_STIM_Pin, GPIO_PIN_SET);
 
-	return status;
+	return CTIA_SUCCESS;
 }
 
 ctia_status_t cTIA_clear_ext_stim_ch(uint8_t channel) {
@@ -612,7 +603,7 @@ ctia_status_t cTIA_get_ext_trigger_state(uint8_t *state) {
 
 	if (state == NULL) return CTIA_INVALID_PARAMETER;
 
-	*state = ctia_state.ext_trigger_state;
+	*state = ctia_state.analog_bus_detect_state;
 
 	return CTIA_SUCCESS;
 }
@@ -690,6 +681,58 @@ ctia_status_t cTIA_conf_available_ext_stim_ch(uint8_t channel_count) {
 	cTIA_config.ext_stim_ch_count = channel_count;
 
 	device_config_save(&cTIA_config);
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_execute_selftest(uint8_t *buffer, uint8_t *size){
+
+	if (buffer == NULL || size == NULL) return CTIA_FAIL;
+
+	uint8_t defective_relays_h[MAX_CH_COUNT / 8];
+	uint8_t defective_relays_l[MAX_CH_COUNT / 8];
+	memset(&defective_relays_h, 0, sizeof(defective_relays_h));
+	memset(&defective_relays_l, 0, sizeof(defective_relays_l));
+
+	cTIA_clear_all_relays();
+	cTIA_set_analog_bus_detect(true);
+	HAL_Delay(100);
+
+	if (!HAL_GPIO_ReadPin(ANALOG_BUS_DETECT_INPUT_GPIO_Port, ANALOG_BUS_DETECT_INPUT_Pin))
+		return CTIA_FAIL;
+
+	for (uint8_t i = 1; i <= cTIA_config.meas_ch_count; i++) {
+
+		cTIA_clear_meas_l();
+		cTIA_set_exclusive_meas_h_ch(i);
+		HAL_Delay(20);
+
+		if (!HAL_GPIO_ReadPin(ANALOG_BUS_DETECT_INPUT_GPIO_Port, ANALOG_BUS_DETECT_INPUT_Pin))
+			defective_relays_l[(i - 1) / 8] |= (1 << ((i - 1) % 8));
+
+		cTIA_set_exclusive_meas_l_ch(i);
+		HAL_Delay(20);
+
+		if (HAL_GPIO_ReadPin(ANALOG_BUS_DETECT_INPUT_GPIO_Port, ANALOG_BUS_DETECT_INPUT_Pin)){
+			defective_relays_h[(i - 1) / 8] |= (1 << ((i - 1) % 8));
+			defective_relays_l[(i - 1) / 8] |= (1 << ((i - 1) % 8));
+		}
+
+		cTIA_clear_meas_h();
+		HAL_Delay(20);
+
+		if (!HAL_GPIO_ReadPin(ANALOG_BUS_DETECT_INPUT_GPIO_Port, ANALOG_BUS_DETECT_INPUT_Pin))
+			defective_relays_h[(i - 1) / 8] |= (1 << ((i - 1) % 8));
+
+	}
+
+	memcpy(buffer, defective_relays_h, sizeof(defective_relays_h));
+	memcpy(buffer + sizeof(defective_relays_h), defective_relays_l, sizeof(defective_relays_l));
+	*size = sizeof(defective_relays_h) + sizeof(defective_relays_l);
+
+	cTIA_clear_all_relays();
+	cTIA_set_analog_bus_detect(false);
+	HAL_Delay(100);
 
 	return CTIA_SUCCESS;
 }

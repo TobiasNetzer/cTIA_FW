@@ -20,7 +20,7 @@ typedef struct _ctia_state_s {
 	uint8_t active_meas_l_ch_bitfield[MAX_CH_COUNT / 8];
 	uint8_t active_ext_stim_ch_bitfield[1 + (EXT_STIM_CH_MAX_COUNT / 8)];
 	uint8_t ext_probe_in_state;
-	uint8_t ext_trigger_state;
+	uint8_t analog_bus_detect_state;
 } ctia_state_t;
 
 
@@ -157,16 +157,16 @@ ctia_status_t cTIA_set_stim_ch_bitfield(const uint8_t *payload, uint8_t size);
 ctia_status_t cTIA_set_ext_probe_in(uint8_t state);
 
 /**
- * @brief  Enables/Disables the external trigger input.
+ * @brief  Enables/Disables the analog bus detect that is used for testing the relay matrix for shorts or defective relays.
  *
- * When the external trigger is enabled, the DMM-sense pins are disconnected from the DMM connector and rerouted to the trigger input.
+ * When the analog bus detect is enabled, the DMM H-L pins are disconnected from the DMM connector and rerouted to the internal detection circuitry.
  *
- * @param[in]  state    			0 = external trigger disabled, 1 = external trigger enabled.
+ * @param[in]  state    			0 = analog bus detect disabled, 1 = analog bus detect enabled.
  *
  * @retval CTIA_SUCCESS         	Operation completed successfully.
  * @retval CTIA_INVALID_PARAMETER   state value is invalid.
  */
-ctia_status_t cTIA_set_ext_trigger(uint8_t state);
+ctia_status_t cTIA_set_analog_bus_detect(uint8_t state);
 
 /**
  * @brief  Sets a external stimulation source channel.
@@ -579,6 +579,8 @@ ctia_status_t cTIA_conf_available_stim_ch(uint8_t channel_count);
  * @retval CTIA_INVALID_PARAMETER   count is > MAX_STIM_CH_COUNT.
  */
 ctia_status_t cTIA_conf_available_ext_stim_ch(uint8_t channel_count);
+
+ctia_status_t cTIA_execute_selftest(uint8_t *buffer, uint8_t *size);
 
 ctia_status_t cTIA_uart_transmit(uint8_t *buffer, uint8_t size);
 

@@ -44,6 +44,7 @@ typedef enum _resp_cmd_s {
 	RESP_BITFIELD_EXT_STIM,
 	RESP_EXT_PROBE_IN_STATE,
 	RESP_EXT_TRIGGER_STATE,
+	RESP_EXECUTE_SELFTEST,
 	RESP_END = 0x01FF
 } resp_cmd_t;
 
@@ -60,7 +61,7 @@ typedef enum _set_cmd_s {
 	SET_EXT_STIM_CH,
 	SET_BITFIELD_EXT_STIM_CH,
 	SET_EXT_PROBE_IN,
-	SET_EXT_TRIGGER,
+	SET_ANALOG_BUS_DETECT,
 	SET_END = 0x02FF
 } set_cmd_t;
 
@@ -108,12 +109,13 @@ typedef enum _conf_cmd_s {
 } conf_cmd_t;
 
 typedef enum _exec_cmd_s {
-	UART_TRANSMIT	= 0x0601,
+	EXECUTE_SELFTEST = 0x0601,
+	UART_TRANSMIT,
 	EXEC_END = 0x06FF
 } exec_cmd_t;
 
 typedef enum _dbg_cmd_s {
-	DBG_ENTER_BOOTLOADER	= 0x0701,
+	DBG_ENTER_BOOTLOADER = 0x0701,
 	DBG_END = 0x07FF
 } dbg_cmd_t;
 
