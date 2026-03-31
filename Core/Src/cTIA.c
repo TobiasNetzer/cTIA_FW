@@ -245,7 +245,7 @@ ctia_status_t cTIA_set_stim_ch_bitfield(const uint8_t *payload, uint8_t size)
 }
 
 
-ctia_status_t cTIA_set_ext_probe_in(uint8_t state) {
+ctia_status_t cTIA_set_ext_probe_in_state(uint8_t state) {
 
 	if (state > 1) return CTIA_INVALID_PARAMETER;
 	if (HAL_GPIO_ReadPin(PROBE_DETECT_GPIO_Port, PROBE_DETECT_Pin) && state) return CTIA_UNAVAILABLE;
@@ -259,7 +259,7 @@ ctia_status_t cTIA_set_ext_probe_in(uint8_t state) {
 	return CTIA_SUCCESS;
 }
 
-ctia_status_t cTIA_set_analog_bus_detect(uint8_t state) {
+ctia_status_t cTIA_set_analog_bus_detect_state(uint8_t state) {
 
 	if (state > 1) return CTIA_INVALID_PARAMETER;
 
@@ -472,7 +472,7 @@ ctia_status_t cTIA_clear_all_relays(void) {
 	cTIA_clear_meas_h();
 	cTIA_clear_meas_l();
 	cTIA_clear_ext_stim();
-	cTIA_set_ext_probe_in(0);
+	cTIA_set_ext_probe_in_state(0);
 
 	return CTIA_SUCCESS;
 }
@@ -599,7 +599,7 @@ ctia_status_t cTIA_get_ext_probe_in_state(uint8_t *state) {
 	return CTIA_SUCCESS;
 }
 
-ctia_status_t cTIA_get_ext_trigger_state(uint8_t *state) {
+ctia_status_t cTIA_get_analog_bus_detect_state(uint8_t *state) {
 
 	if (state == NULL) return CTIA_INVALID_PARAMETER;
 
@@ -695,7 +695,7 @@ ctia_status_t cTIA_execute_selftest(uint8_t *buffer, uint8_t *size){
 	memset(&defective_relays_l, 0, sizeof(defective_relays_l));
 
 	cTIA_clear_all_relays();
-	cTIA_set_analog_bus_detect(true);
+	cTIA_set_analog_bus_detect_state(true);
 	HAL_Delay(100);
 
 	if (!HAL_GPIO_ReadPin(ANALOG_BUS_DETECT_INPUT_GPIO_Port, ANALOG_BUS_DETECT_INPUT_Pin))
@@ -731,7 +731,7 @@ ctia_status_t cTIA_execute_selftest(uint8_t *buffer, uint8_t *size){
 	*size = sizeof(defective_relays_h) + sizeof(defective_relays_l);
 
 	cTIA_clear_all_relays();
-	cTIA_set_analog_bus_detect(false);
+	cTIA_set_analog_bus_detect_state(false);
 	HAL_Delay(100);
 
 	return CTIA_SUCCESS;

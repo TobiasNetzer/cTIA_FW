@@ -154,10 +154,10 @@ ctia_status_t cTIA_set_stim_ch_bitfield(const uint8_t *payload, uint8_t size);
  * @retval CTIA_SUCCESS         	Operation completed successfully.
  * @retval CTIA_INVALID_PARAMETER   state value is invalid.
  */
-ctia_status_t cTIA_set_ext_probe_in(uint8_t state);
+ctia_status_t cTIA_set_ext_probe_in_state(uint8_t state);
 
 /**
- * @brief  Enables/Disables the analog bus detect that is used for testing the relay matrix for shorts or defective relays.
+ * @brief  Enables/Disables the analog bus detect relay that is used for testing the relay matrix for shorts or defective relays.
  *
  * When the analog bus detect is enabled, the DMM H-L pins are disconnected from the DMM connector and rerouted to the internal detection circuitry.
  *
@@ -166,7 +166,7 @@ ctia_status_t cTIA_set_ext_probe_in(uint8_t state);
  * @retval CTIA_SUCCESS         	Operation completed successfully.
  * @retval CTIA_INVALID_PARAMETER   state value is invalid.
  */
-ctia_status_t cTIA_set_analog_bus_detect(uint8_t state);
+ctia_status_t cTIA_set_analog_bus_detect_state(uint8_t state);
 
 /**
  * @brief  Sets a external stimulation source channel.
@@ -472,9 +472,9 @@ ctia_status_t cTIA_get_ext_stim_bitfield(uint8_t *bitfield, uint8_t *size);
 ctia_status_t cTIA_get_ext_probe_in_state(uint8_t *state);
 
 /**
- * @brief  Retrieves the state of the external trigger input.
+ * @brief  Retrieves the state of the analog bus detection relay.
  *
- * This function reads the state of the external trigger input from the CTIA hardware
+ * This function reads the state of the analog bus detection relay from the CTIA hardware
  * and stores it in the provided state buffer.
  *
  * @param[out] state 				Pointer to a buffer where the state will be stored.
@@ -482,7 +482,7 @@ ctia_status_t cTIA_get_ext_probe_in_state(uint8_t *state);
  * @retval CTIA_SUCCESS             Operation completed successfully.
  * @retval CTIA_INVALID_PARAMETER   A pointer is NULL.
  */
-ctia_status_t cTIA_get_ext_trigger_state(uint8_t *state);
+ctia_status_t cTIA_get_analog_bus_detect_state(uint8_t *state);
 
 /**
  * @brief  Retrieves the available MEAS channels.
@@ -580,6 +580,18 @@ ctia_status_t cTIA_conf_available_stim_ch(uint8_t channel_count);
  */
 ctia_status_t cTIA_conf_available_ext_stim_ch(uint8_t channel_count);
 
+/**
+ * @brief  	Executes a relay matrix self-test. By switching the relays
+ * 			in various configurations and testing if the analog bus is shorted or not.
+ * 			This way the device can detect stuck relays within the matrix.
+ *
+ * @param[out] buffer 				Pointer to a buffer where the test result bitfields will be stored.
+ * @param[out] size   				Pointer to a variable that receives the number of bytes
+ *                    				written into @p buffer.
+ *
+ * @retval CTIA_SUCCESS             Self-test was completed
+ * @retval CTIA_FAIL			   	Self-test was aborted
+ */
 ctia_status_t cTIA_execute_selftest(uint8_t *buffer, uint8_t *size);
 
 ctia_status_t cTIA_uart_transmit(uint8_t *buffer, uint8_t size);

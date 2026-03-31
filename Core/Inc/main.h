@@ -107,7 +107,7 @@ void Error_Handler(void);
 /* USER CODE BEGIN Private defines */
 #define DEVICE_ID 0xA101
 #define DEVICE_NAME_STRING "compact Test Interface Adapter"
-#define FW_VERSION_STRING "0.4.0"
+#define FW_VERSION_STRING "0.4.1"
 #define BUILD_DATE __DATE__
 #define BUILD_TIME __TIME__
 /* USER CODE END Private defines */

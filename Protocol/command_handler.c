@@ -175,7 +175,7 @@ void handle_command(cmd_frame_t *frame) {
 		}
 
 		/** SET CMD **/
-		case SET_EXT_PROBE_IN: {
+		case SET_EXT_PROBE_IN_STATE: {
 			if (frame->payload_size < 1) {
 				status = CTIA_TOO_FEW_BYTES;
 				goto error;
@@ -184,13 +184,13 @@ void handle_command(cmd_frame_t *frame) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
-			status = cTIA_set_ext_probe_in(frame->payload[0]);
+			status = cTIA_set_ext_probe_in_state(frame->payload[0]);
 			cmd_frame_response_ok(frame);
 			break;
 		}
 
 		/** SET CMD **/
-		case SET_ANALOG_BUS_DETECT: {
+		case SET_ANALOG_BUS_DETECT_STATE: {
 			if (frame->payload_size < 1) {
 				status = CTIA_TOO_FEW_BYTES;
 				goto error;
@@ -199,7 +199,7 @@ void handle_command(cmd_frame_t *frame) {
 				status = CTIA_TOO_MANY_BYTES;
 				goto error;
 			}
-			status = cTIA_set_analog_bus_detect(frame->payload[0]);
+			status = cTIA_set_analog_bus_detect_state(frame->payload[0]);
 			cmd_frame_response_ok(frame);
 			break;
 		}
@@ -335,7 +335,7 @@ void handle_command(cmd_frame_t *frame) {
 		}
 
 		/** GET CMD **/
-		case GET_FW_VESION: {
+		case GET_FW_VERSION: {
 			status = cTIA_get_fw_version(frame->payload, &frame->payload_size);
 			frame->command = RESP_FW_VERSION;
 			break;
@@ -399,9 +399,9 @@ void handle_command(cmd_frame_t *frame) {
 		}
 
 		/** GET CMD **/
-		case GET_EXT_TRIGGER_STATE: {
-			status = cTIA_get_ext_trigger_state(&frame->payload[0]);
-			frame->command = RESP_EXT_TRIGGER_STATE;
+		case GET_ANALOG_BUS_DETECT_STATE: {
+			status = cTIA_get_analog_bus_detect_state(&frame->payload[0]);
+			frame->command = RESP_ANALOG_BUS_DETECT_STATE;
 			frame->payload_size = 1;
 			break;
 		}
