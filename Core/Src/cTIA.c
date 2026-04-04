@@ -26,7 +26,7 @@ ctia_status_t cTIA_set_exclusive_meas_h_ch(uint8_t channel) {
 	memset(ctia_state.active_meas_h_ch_bitfield, 0x00, sizeof(ctia_state.active_meas_h_ch_bitfield));
 
 	uint8_t index = (channel - 1) / 8;
-	ctia_state.active_meas_h_ch_bitfield[index] |= (1 << (channel - 1));
+	ctia_state.active_meas_h_ch_bitfield[index] |= (1 << ((channel - 1) % 8));
 
 	bool unchanged = (memcmp(ctia_state.active_meas_h_ch_bitfield, old_bitfield, sizeof(ctia_state.active_meas_h_ch_bitfield)) == 0);
 
@@ -102,7 +102,7 @@ ctia_status_t cTIA_set_exclusive_meas_l_ch(uint8_t channel) {
 	memset(ctia_state.active_meas_l_ch_bitfield, 0x00, sizeof(ctia_state.active_meas_l_ch_bitfield));
 
 	uint8_t index = (channel - 1) / 8;
-	ctia_state.active_meas_l_ch_bitfield[index] |= (1 << (channel - 1));
+	ctia_state.active_meas_l_ch_bitfield[index] |= (1 << ((channel - 1) % 8));
 
 	bool unchanged = (memcmp(ctia_state.active_meas_l_ch_bitfield, old_bitfield, sizeof(ctia_state.active_meas_l_ch_bitfield)) == 0);
 
@@ -178,7 +178,7 @@ ctia_status_t cTIA_set_exclusive_stim_ch(uint8_t channel) {
 	memset(ctia_state.active_stim_ch_bitfield, 0x00, sizeof(ctia_state.active_stim_ch_bitfield));
 
 	uint8_t index = (channel - 1) / 8;
-	ctia_state.active_stim_ch_bitfield[index] |= (1 << (channel - 1));
+	ctia_state.active_stim_ch_bitfield[index] |= (1 << ((channel - 1) % 8));
 
 	bool unchanged = (memcmp(ctia_state.active_stim_ch_bitfield, old_bitfield, sizeof(ctia_state.active_stim_ch_bitfield)) == 0);
 
