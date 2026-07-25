@@ -533,6 +533,54 @@ ctia_status_t cTIA_get_available_stim_channels(uint8_t *buffer, uint8_t *size);
 ctia_status_t cTIA_get_available_ext_stim_channels(uint8_t *buffer, uint8_t *size);
 
 /**
+ * @brief Retrieves the availability of the I2C interface.
+ *
+ * This function reads the availability of the I2C interface from the CTIA hardware
+ * and stores it in the provided buffer. The actual number of bytes written
+ * is returned through the @p size parameter.
+ *
+ * @param[out] buffer Pointer to a buffer where the bool will be stored.
+ * @param[out] size   Pointer to a variable that receives the number of bytes
+ *                    written into @p buffer.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   A pointer is NULL.
+ */
+ctia_status_t cTIA_get_available_i2c_interface(uint8_t *buffer, uint8_t *size);
+
+/**
+ * @brief Retrieves the availability of the UART interface.
+ *
+ * This function reads the availability of the UART interface from the CTIA hardware
+ * and stores it in the provided buffer. The actual number of bytes written
+ * is returned through the @p size parameter.
+ *
+ * @param[out] buffer Pointer to a buffer where the bool will be stored.
+ * @param[out] size   Pointer to a variable that receives the number of bytes
+ *                    written into @p buffer.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   A pointer is NULL.
+ */
+ctia_status_t cTIA_get_available_uart_interface(uint8_t *buffer, uint8_t *size);
+
+/**
+ * @brief Retrieves the availability of the RS485 interface.
+ *
+ * This function reads the availability of the RS485 interface from the CTIA hardware
+ * and stores it in the provided buffer. The actual number of bytes written
+ * is returned through the @p size parameter.
+ *
+ * @param[out] buffer Pointer to a buffer where the bool will be stored.
+ * @param[out] size   Pointer to a variable that receives the number of bytes
+ *                    written into @p buffer.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   A pointer is NULL.
+ */
+ctia_status_t cTIA_get_available_rs485_interface(uint8_t *buffer, uint8_t *size);
+
+/**
  * @brief  Configures the device's serial number.
  *
  * This function reads a 32-bit serial number from the provided payload,
@@ -581,6 +629,47 @@ ctia_status_t cTIA_conf_available_stim_ch(uint8_t channel_count);
 ctia_status_t cTIA_conf_available_ext_stim_ch(uint8_t channel_count);
 
 /**
+ * @brief  Configures the device's available I2C interface.
+ *
+ * @param[in]  availability uint8_t.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   availability is > 1.
+ */
+ctia_status_t cTIA_conf_available_i2c_interface(uint8_t is_available);
+
+/**
+ * @brief  Configures the device's available UART interface.
+ *
+ * @param[in]  availability uint8_t.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   availability is > 1.
+ */
+ctia_status_t cTIA_conf_available_uart_interface(uint8_t is_available);
+
+/**
+ * @brief  Configures the device's available RS485 interface.
+ *
+ * @param[in]  availability uint8_t.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   availability is > 1.
+ */
+ctia_status_t cTIA_conf_available_rs485_interface(uint8_t is_available);
+
+/**
+ * @brief  Configures the device's I2C peripheral.
+ *
+ * @param[in]  buffer 	Pointer to a buffer containing the settings data.
+ * @param[in]  size 	Pointer to a variable holding the payload size on input.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   A pointer is NULL or the size is not 1.
+ */
+ctia_status_t cTIA_conf_i2c_settings(uint8_t *buffer, uint8_t *size);
+
+/**
  * @brief  	Executes a relay matrix self-test. By switching the relays
  * 			in various configurations and testing if the analog bus is shorted or not.
  * 			This way the device can detect stuck relays within the matrix.
@@ -593,6 +682,10 @@ ctia_status_t cTIA_conf_available_ext_stim_ch(uint8_t channel_count);
  * @retval CTIA_FAIL			   	Self-test was aborted
  */
 ctia_status_t cTIA_execute_selftest(uint8_t *buffer, uint8_t *size);
+
+ctia_status_t cTIA_i2c_transmit(uint8_t *buffer, uint8_t *size);
+
+ctia_status_t cTIA_i2c_receive(uint8_t *buffer, uint8_t *size);
 
 ctia_status_t cTIA_uart_transmit(uint8_t *buffer, uint8_t size);
 

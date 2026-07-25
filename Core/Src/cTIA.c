@@ -10,8 +10,10 @@
 #include <string.h>
 #include <stdbool.h>
 #include "device_config.h"
+#include "i2c.h"
 
 extern UART_HandleTypeDef huart1;
+extern I2C_HandleTypeDef hi2c2;
 extern device_config_t cTIA_config;
 
 static ctia_state_t ctia_state = {0};
@@ -636,6 +638,35 @@ ctia_status_t cTIA_get_available_ext_stim_channels(uint8_t *buffer, uint8_t *siz
 	buffer[0] = cTIA_config.ext_stim_ch_count;
 	*size = 1;
 
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_available_i2c_interface(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	buffer[0] = cTIA_config.is_available_i2c;
+	*size = 1;
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_available_uart_interface(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	buffer[0] = cTIA_config.is_available_uart;
+	*size = 1;
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_get_available_rs485_interface(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+
+	buffer[0] = cTIA_config.is_available_rs485;
+	*size = 1;
 
 	return CTIA_SUCCESS;
 }
@@ -681,6 +712,54 @@ ctia_status_t cTIA_conf_available_ext_stim_ch(uint8_t channel_count) {
 	cTIA_config.ext_stim_ch_count = channel_count;
 
 	device_config_save(&cTIA_config);
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_conf_available_i2c_interface(uint8_t is_available) {
+
+	if (is_available > 1) return CTIA_INVALID_PARAMETER;
+
+	cTIA_config.is_available_i2c = is_available;
+
+	device_config_save(&cTIA_config);
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_conf_available_uart_interface(uint8_t is_available) {
+
+	if (is_available > 1) return CTIA_INVALID_PARAMETER;
+
+	cTIA_config.is_available_uart = is_available;
+
+	device_config_save(&cTIA_config);
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_conf_available_rs485_interface(uint8_t is_available) {
+
+	if (is_available > 1) return CTIA_INVALID_PARAMETER;
+
+	cTIA_config.is_available_rs485 = is_available;
+
+	device_config_save(&cTIA_config);
+
+	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_conf_i2c_settings(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+	if (*size != 1) return CTIA_INVALID_PARAMETER;
+
+	uint8_t raw = buffer[0];
+
+	if (raw >= I2C_SPEED_MAX)
+		return CTIA_INVALID_PARAMETER;
+
+	I2C2_SetSpeed((I2C_Speed)raw);
 
 	return CTIA_SUCCESS;
 }
@@ -735,6 +814,93 @@ ctia_status_t cTIA_execute_selftest(uint8_t *buffer, uint8_t *size){
 	HAL_Delay(100);
 
 	return CTIA_SUCCESS;
+}
+
+ctia_status_t cTIA_i2c_transmit(uint8_t *buffer, uint8_t *size) {
+
+    if (buffer == NULL || size == NULL)
+        return CTIA_INVALID_PARAMETER;
+
+    if (*size < 5)
+        return CTIA_INVALID_PARAMETER;
+
+    if (buffer[0] > 127)
+    	return CTIA_INVALID_PARAMETER;
+
+    uint16_t device_addr   = (buffer[0] << 1);
+
+    uint32_t timeout =
+        ((uint32_t)buffer[1]) |
+        ((uint32_t)buffer[2] << 8) |
+        ((uint32_t)buffer[3] << 16) |
+        ((uint32_t)buffer[4] << 24);
+
+    uint16_t bytes_to_read = *size - 5;
+
+    *size = 0;
+
+    HAL_StatusTypeDef st = HAL_I2C_Master_Transmit(&hi2c2, device_addr, buffer + 5, bytes_to_read, timeout);
+
+    switch (st)
+    {
+        case HAL_OK:
+            return CTIA_SUCCESS;
+
+        case HAL_TIMEOUT:
+            return CTIA_TIMEOUT;
+
+        case HAL_BUSY:
+            return CTIA_BUSY;
+
+        case HAL_ERROR:
+        default:
+            return CTIA_FAIL;
+    }
+}
+
+ctia_status_t cTIA_i2c_receive(uint8_t *buffer, uint8_t *size)
+{
+    if (buffer == NULL || size == NULL)
+        return CTIA_INVALID_PARAMETER;
+
+    if (*size != 6)
+        return CTIA_INVALID_PARAMETER;
+
+    if (buffer[0] > 127)
+        return CTIA_INVALID_PARAMETER;
+
+    uint16_t device_addr = buffer[0] << 1;
+
+    uint32_t timeout =
+        ((uint32_t)buffer[1]) |
+        ((uint32_t)buffer[2] << 8) |
+        ((uint32_t)buffer[3] << 16) |
+        ((uint32_t)buffer[4] << 24);
+
+    uint8_t bytes_to_read = buffer[5];
+
+    *size = bytes_to_read;
+
+    HAL_StatusTypeDef st = HAL_I2C_Master_Receive(&hi2c2, device_addr, buffer, bytes_to_read, timeout);
+
+    if (st != HAL_OK)
+    	*size = 0;
+
+    switch (st)
+    {
+        case HAL_OK:
+            return CTIA_SUCCESS;
+
+        case HAL_TIMEOUT:
+            return CTIA_TIMEOUT;
+
+        case HAL_BUSY:
+            return CTIA_BUSY;
+
+        case HAL_ERROR:
+        default:
+            return CTIA_FAIL;
+    }
 }
 
 ctia_status_t cTIA_uart_transmit(uint8_t *buffer, uint8_t size) {

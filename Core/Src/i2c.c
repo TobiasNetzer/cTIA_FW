@@ -136,5 +136,16 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* i2cHandle)
 }
 
 /* USER CODE BEGIN 1 */
+static const uint32_t I2C_TimingTable[] = {
+    [I2C_SPEED_100KHZ] = 0x10805D88,
+    [I2C_SPEED_400KHZ] = 0x00B01A4B,
+    [I2C_SPEED_1MHZ]   = 0x00500A13
+};
+
+void I2C2_SetSpeed(I2C_Speed speed) {
+    HAL_I2C_DeInit(&hi2c2);
+    hi2c2.Init.Timing = I2C_TimingTable[speed];
+    HAL_I2C_Init(&hi2c2);
+}
 
 /* USER CODE END 1 */

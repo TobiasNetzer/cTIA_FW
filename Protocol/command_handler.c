@@ -363,6 +363,27 @@ void handle_command(cmd_frame_t *frame) {
 		}
 
 		/** GET CMD **/
+		case GET_AVAILABLE_I2C_INTERFACE: {
+			status = cTIA_get_available_i2c_interface(frame->payload, &frame->payload_size);
+			frame->command = RESP_AVAILABLE_I2C_INTERFACE;
+			break;
+		}
+
+		/** GET CMD **/
+		case GET_AVAILABLE_UART_INTERFACE: {
+			status = cTIA_get_available_uart_interface(frame->payload, &frame->payload_size);
+			frame->command = RESP_AVAILABLE_UART_INTERFACE;
+			break;
+		}
+
+		/** GET CMD **/
+		case GET_AVAILABLE_RS485_INTERFACE: {
+			status = cTIA_get_available_rs485_interface(frame->payload, &frame->payload_size);
+			frame->command = RESP_AVAILABLE_RS485_INTERFACE;
+			break;
+		}
+
+		/** GET CMD **/
 		case GET_BITFIELD_MEAS_H: {
 			status = cTIA_get_meas_h_bitfield(frame->payload, &frame->payload_size);
 			frame->command = RESP_BITFIELD_MEAS_H;
@@ -434,9 +455,87 @@ void handle_command(cmd_frame_t *frame) {
 			break;
 		}
 
+		/** CONF CMD **/
+		case CONF_AVAILABLE_I2C: {
+			status = cTIA_conf_available_i2c_interface(frame->payload[0]);
+			cmd_frame_response_ok(frame);
+			break;
+		}
+
+		/** CONF CMD **/
+		case CONF_AVAILABLE_UART: {
+			status = cTIA_conf_available_uart_interface(frame->payload[0]);
+			cmd_frame_response_ok(frame);
+			break;
+		}
+
+		/** CONF CMD **/
+		case CONF_AVAILABLE_RS485: {
+			status = cTIA_conf_available_rs485_interface(frame->payload[0]);
+			cmd_frame_response_ok(frame);
+			break;
+		}
+
+		/** CONF CMD **/
+		case CONF_I2C_SETTINGS: {
+			status = cTIA_conf_i2c_settings(frame->payload, &frame->payload_size);
+			cmd_frame_response_ok(frame);
+			break;
+		}
+
 		case EXECUTE_SELFTEST: {
 			status = cTIA_execute_selftest(frame->payload, &frame->payload_size);
 			frame->command = RESP_EXECUTE_SELFTEST;
+			break;
+		}
+
+		case EXECUTE_I2C_TRANSMIT: {
+			status = cTIA_i2c_transmit(frame->payload, &frame->payload_size);
+
+			switch (status) {
+				case CTIA_SUCCESS:
+					cmd_frame_response_ok(frame);
+					break;
+				case CTIA_TIMEOUT:
+					frame->command = RESP_I2C_TIMEOUT;
+					status = CTIA_SUCCESS;
+					break;
+
+				case CTIA_FAIL:
+					frame->command = RESP_I2C_NACK;
+					status = CTIA_SUCCESS;
+					break;
+
+				default:
+					frame->command = RESP_ERROR;
+					break;
+			}
+
+			break;
+		}
+
+		case EXECUTE_I2C_RECEIVE: {
+			status = cTIA_i2c_receive(frame->payload, &frame->payload_size);
+
+			switch (status) {
+				case CTIA_SUCCESS:
+					frame->command = RESP_I2C_RECEIVE;
+					break;
+				case CTIA_TIMEOUT:
+					frame->command = RESP_I2C_TIMEOUT;
+					status = CTIA_SUCCESS;
+					break;
+
+				case CTIA_FAIL:
+					frame->command = RESP_I2C_NACK;
+					status = CTIA_SUCCESS;
+					break;
+
+				default:
+					frame->command = RESP_ERROR;
+					break;
+			}
+
 			break;
 		}
 
@@ -467,17 +566,40 @@ void handle_command(cmd_frame_t *frame) {
 
 	}
 
-	if (status != CTIA_SUCCESS) goto error;
+	if (status != CTIA_SUCCESS)
+	    goto error;
 
 	frame->control_byte = 0;
-	if (send_response) cmd_transmit(frame);
+
+	if (send_response)
+	    cmd_transmit(frame);
+
 	return;
 
-error:
- 	frame->command = RESP_ERROR;
- 	frame->control_byte = 0;
+	error:
+
+	switch (status) {
+
+	    case CTIA_TIMEOUT:
+	        frame->command = RESP_TIMEOUT;
+	        break;
+
+	    case CTIA_BUSY:
+	        frame->command = RESP_BUSY;
+	        break;
+
+	    default:
+	        frame->command = RESP_ERROR;
+	        break;
+	}
+
+	frame->control_byte = 0;
 	frame->payload_size = 1;
 	frame->payload[0] = status;
-	if (send_response) cmd_transmit(frame);
+
+	if (send_response)
+	    cmd_transmit(frame);
+
 	return;
+
 }

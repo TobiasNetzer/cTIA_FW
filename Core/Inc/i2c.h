@@ -29,6 +29,12 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
+typedef enum {
+    I2C_SPEED_100KHZ = 0,
+    I2C_SPEED_400KHZ,
+    I2C_SPEED_1MHZ,
+    I2C_SPEED_MAX
+} I2C_Speed;
 
 /* USER CODE END Includes */
 
@@ -41,6 +47,7 @@ extern I2C_HandleTypeDef hi2c2;
 void MX_I2C2_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+void I2C2_SetSpeed(I2C_Speed speed);
 
 /* USER CODE END Prototypes */
 
