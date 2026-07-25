@@ -14,8 +14,13 @@ static uint8_t transmit_buffer[MAX_FRAME_SIZE];
 
 static cmd_frame_t cmd_frame;
 static volatile bool frame_ready = false;
+static uint8_t rx_accum[2048];
+static uint32_t rx_len = 0;
+static uint32_t expected_total = 0;
+static uint32_t last_rx_time = 0;
 
 extern CRC_HandleTypeDef hcrc;
+extern USBD_HandleTypeDef hUsbDeviceFS;
 extern void Error_Handler(void);
 
 static ctia_status_t parse_cmd(uint8_t *input_buffer, uint8_t size) {
@@ -33,7 +38,8 @@ static ctia_status_t parse_cmd(uint8_t *input_buffer, uint8_t size) {
 		uint8_t received_crc8 = input_buffer[size - 1];
 		uint8_t crc8 = (uint8_t) HAL_CRC_Calculate(&hcrc, (uint32_t *) &input_buffer[2], (uint32_t) size - 3);
 
-		if (received_crc8 != crc8) return CTIA_CRC_MISMATCH;
+		if (received_crc8 != crc8)
+			return CTIA_CRC_MISMATCH;
 
 	}
 
@@ -111,30 +117,70 @@ void clear_frame_ready(void) {
 
 }
 
-void cmd_receive_callback(uint8_t *buf, uint32_t *len) {
-
-	if (frame_ready) {
-		/* This "dummy" frame contains a busy response.
+void cmd_receive_callback(uint8_t *buf, uint32_t *len)
+{
+    if (frame_ready)
+    {
+    	/* This "dummy" frame contains a busy response.
 		 * Since the cmd_frame struct is not allowed to be accessed or modified in this state,
 		 * where the command_handler hasn't finished yet, we would need to create a temporary struct
 		 * that can be passed to the cmd_transmit function. However this would allocate 128 Bytes on the Stack.
 		 * Therefore a minimal frame is created and cast to cmd_frame_t *.
 		 */
-		uint8_t busy_frame[7] = {0x00, 0x00, 0x02, 0x01, 0x00, 0x01, 0x08};
-		if (cmd_transmit((cmd_frame_t *) &busy_frame) != CTIA_SUCCESS) Error_Handler(); // cmd_handler not finished - If transmit fails handle error
-		return;
-	}
+        uint8_t busy_frame[7] = {0x00, 0x00, 0x02, 0x01, 0x00, 0x01, 0x08};
+        if (cmd_transmit((cmd_frame_t *)&busy_frame) != CTIA_SUCCESS)
+            Error_Handler();
 
-	ctia_status_t status = parse_cmd(buf, *len);
+        USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+        return;
+    }
 
-	if (status != CTIA_SUCCESS) {
-		cmd_frame.command = RESP_ERROR;
-		cmd_frame.payload_size = 1;
-		cmd_frame.payload[0] = status;
-		if (cmd_transmit(&cmd_frame) != CTIA_SUCCESS) Error_Handler();
-		return;
-	}
+    if (expected_total > 0 && (HAL_GetTick() - last_rx_time) > 50)
+    {
+        rx_len = 0;
+        expected_total = 0;
+    }
 
-	frame_ready = true;
+    if (rx_len + *len > sizeof(rx_accum))
+    {
+        rx_len = 0;
+        expected_total = 0;
+        USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+        return;
+    }
 
+    memcpy(&rx_accum[rx_len], buf, *len);
+    rx_len += *len;
+
+    last_rx_time = HAL_GetTick();
+
+    if (rx_len >= 6 && expected_total == 0)
+    {
+        uint8_t payload_size = rx_accum[5];
+        expected_total = 7 + payload_size;
+    }
+
+    if (expected_total > 0 && rx_len >= expected_total)
+    {
+        ctia_status_t status = parse_cmd(rx_accum, expected_total);
+
+        if (status != CTIA_SUCCESS)
+        {
+            cmd_frame.command = RESP_ERROR;
+            cmd_frame.payload_size = 1;
+            cmd_frame.payload[0] = status;
+
+            if (cmd_transmit(&cmd_frame) != CTIA_SUCCESS)
+                Error_Handler();
+        }
+        else
+        {
+            frame_ready = true;
+        }
+
+        rx_len = 0;
+        expected_total = 0;
+    }
+
+    USBD_CDC_ReceivePacket(&hUsbDeviceFS);
 }

@@ -17,9 +17,9 @@
 
 #define CMD_FRAME_HEADER 0xAA55
 
-#define MAX_FRAME_SIZE MIN_FRAME_SIZE + MAX_PAYLOAD_SIZE
 #define MIN_FRAME_SIZE 7
 #define MAX_PAYLOAD_SIZE 120
+#define MAX_FRAME_SIZE MIN_FRAME_SIZE + MAX_PAYLOAD_SIZE
 
 typedef struct _cmd_frame_s {
 	uint16_t header;

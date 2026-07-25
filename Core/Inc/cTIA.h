@@ -13,6 +13,7 @@
 #include "TLC6C5816_driver.h"
 
 #define EXT_STIM_CH_MAX_COUNT 4
+#define UART_RX_BUFFER_SIZE 256
 
 typedef struct _ctia_state_s {
 	uint8_t active_stim_ch_bitfield[MAX_CH_COUNT / 8];
@@ -23,6 +24,7 @@ typedef struct _ctia_state_s {
 	uint8_t analog_bus_detect_state;
 } ctia_state_t;
 
+void cTIA_uart_init(void);
 
 /**
  * @brief  Sets a exclusive measurement matrix high-channel.
@@ -670,6 +672,17 @@ ctia_status_t cTIA_conf_available_rs485_interface(uint8_t is_available);
 ctia_status_t cTIA_conf_i2c_settings(uint8_t *buffer, uint8_t *size);
 
 /**
+ * @brief  Configures the device's UART peripheral.
+ *
+ * @param[in]  buffer 	Pointer to a buffer containing the settings data.
+ * @param[in]  size 	Pointer to a variable holding the payload size on input.
+ *
+ * @retval CTIA_SUCCESS             Operation completed successfully.
+ * @retval CTIA_INVALID_PARAMETER   A pointer is NULL or the size is not 7.
+ */
+ctia_status_t cTIA_conf_uart_settings(uint8_t *buffer, uint8_t *size);
+
+/**
  * @brief  	Executes a relay matrix self-test. By switching the relays
  * 			in various configurations and testing if the analog bus is shorted or not.
  * 			This way the device can detect stuck relays within the matrix.
@@ -687,6 +700,6 @@ ctia_status_t cTIA_i2c_transmit(uint8_t *buffer, uint8_t *size);
 
 ctia_status_t cTIA_i2c_receive(uint8_t *buffer, uint8_t *size);
 
-ctia_status_t cTIA_uart_transmit(uint8_t *buffer, uint8_t size);
+ctia_status_t cTIA_uart_transceive(uint8_t *buffer, uint8_t *size);
 
 #endif /* CTIA_H_ */

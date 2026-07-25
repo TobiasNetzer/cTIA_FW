@@ -483,6 +483,13 @@ void handle_command(cmd_frame_t *frame) {
 			break;
 		}
 
+		/** CONF CMD **/
+		case CONF_UART_SETTINGS: {
+			status = cTIA_conf_uart_settings(frame->payload, &frame->payload_size);
+			cmd_frame_response_ok(frame);
+			break;
+		}
+
 		case EXECUTE_SELFTEST: {
 			status = cTIA_execute_selftest(frame->payload, &frame->payload_size);
 			frame->command = RESP_EXECUTE_SELFTEST;
@@ -540,13 +547,26 @@ void handle_command(cmd_frame_t *frame) {
 		}
 
 		/** UART CMD **/
-		case UART_TRANSMIT: {
+		case EXECUTE_UART_TRANSCEIVE: {
 			if (frame->payload_size == 0) {
 				status = CTIA_TOO_FEW_BYTES;
 				goto error;
 			}
-			status = cTIA_uart_transmit(frame->payload, frame->payload_size);
-			cmd_frame_response_ok(frame);
+			status = cTIA_uart_transceive(frame->payload, &frame->payload_size);
+
+			switch (status) {
+				case CTIA_SUCCESS:
+					frame->command = RESP_UART_TRANSCEIVE;
+					break;
+				case CTIA_TIMEOUT:
+					frame->command = RESP_UART_TIMEOUT;
+					status = CTIA_SUCCESS;
+					break;
+
+				default:
+					frame->command = RESP_ERROR;
+					break;
+			}
 			break;
 		}
 

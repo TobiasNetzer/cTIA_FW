@@ -149,3 +149,4 @@ void I2C2_SetSpeed(I2C_Speed speed) {
 }
 
 /* USER CODE END 1 */
+

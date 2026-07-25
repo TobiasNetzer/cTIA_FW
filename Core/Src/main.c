@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "crc.h"
+#include "dma.h"
 #include "i2c.h"
 #include "spi.h"
 #include "usart.h"
@@ -93,6 +94,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USB_Device_Init();
   MX_I2C2_Init();
   MX_SPI1_Init();
@@ -113,6 +115,7 @@ int main(void)
   HAL_GPIO_WritePin(SHIFT_REG_G_STIM_GPIO_Port, SHIFT_REG_G_STIM_Pin, GPIO_PIN_RESET);
 
   device_config_load(&cTIA_config);
+  cTIA_uart_init();
 
   /* USER CODE END 2 */
 

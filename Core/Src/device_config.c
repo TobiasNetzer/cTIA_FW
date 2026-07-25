@@ -15,9 +15,9 @@ void device_config_defaults(device_config_t* cfg)
     cfg->meas_ch_count = 0;
     cfg->ext_stim_ch_count = 0;
 
-    cfg->is_available_uart = 1;
-    cfg->is_available_i2c = 1;
-    cfg->is_available_rs485 = 1;
+    cfg->is_available_uart = 0;
+    cfg->is_available_i2c = 0;
+    cfg->is_available_rs485 = 0;
 }
 
 void device_config_load(device_config_t* cfg)

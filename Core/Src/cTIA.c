@@ -17,6 +17,77 @@ extern I2C_HandleTypeDef hi2c2;
 extern device_config_t cTIA_config;
 
 static ctia_state_t ctia_state = {0};
+static uint8_t uart_rx_buffer[UART_RX_BUFFER_SIZE];
+
+static inline uint32_t dma_rx_pos(void) {
+    return UART_RX_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(huart1.hdmarx);
+}
+
+static ctia_status_t cTIA_uart_configure(uint32_t baud, uint8_t data_bits, uint8_t stop_bits, uint8_t parity) {
+
+	HAL_UART_DMAStop(&huart1);
+	huart1.RxState = HAL_UART_STATE_READY;
+
+	if (HAL_UART_DeInit(&huart1) != HAL_OK)
+		return CTIA_FAIL;
+
+	huart1.Init.BaudRate = baud;
+
+	switch (data_bits) {
+	    case 7:
+	        if (parity == UART_PARITY_NONE)
+	            huart1.Init.WordLength = UART_WORDLENGTH_7B;
+	        else
+	            huart1.Init.WordLength = UART_WORDLENGTH_8B;   // 7 data + parity
+	        break;
+
+	    case 8:
+	        if (parity == UART_PARITY_NONE)
+	            huart1.Init.WordLength = UART_WORDLENGTH_8B;
+	        else
+	            huart1.Init.WordLength = UART_WORDLENGTH_9B;   // 8 data + parity
+	        break;
+
+	    default:
+	        return CTIA_INVALID_PARAMETER;
+	}
+
+	switch (stop_bits) {
+		case 1: huart1.Init.StopBits = UART_STOPBITS_1; break;
+		case 2: huart1.Init.StopBits = UART_STOPBITS_2; break;
+		default: return CTIA_INVALID_PARAMETER;
+	}
+
+	switch (parity) {
+		case 0: huart1.Init.Parity = UART_PARITY_NONE; break;
+		case 1: huart1.Init.Parity = UART_PARITY_EVEN; break;
+		case 2: huart1.Init.Parity = UART_PARITY_ODD; break;
+		default: return CTIA_INVALID_PARAMETER;
+	}
+
+	huart1.Init.Mode = UART_MODE_TX_RX;
+	huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+	huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+	huart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+	huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+
+	if (HAL_UART_Init(&huart1) != HAL_OK)
+		return CTIA_FAIL;
+
+	huart1.RxState = HAL_UART_STATE_READY;
+
+	if (HAL_UART_Receive_DMA(&huart1, uart_rx_buffer, UART_RX_BUFFER_SIZE) != HAL_OK)
+		return CTIA_FAIL;
+
+	return CTIA_SUCCESS;
+}
+
+
+void cTIA_uart_init(void) {
+    HAL_UART_Receive_DMA(&huart1, uart_rx_buffer, UART_RX_BUFFER_SIZE);
+}
+
 
 ctia_status_t cTIA_set_exclusive_meas_h_ch(uint8_t channel) {
 
@@ -764,6 +835,24 @@ ctia_status_t cTIA_conf_i2c_settings(uint8_t *buffer, uint8_t *size) {
 	return CTIA_SUCCESS;
 }
 
+ctia_status_t cTIA_conf_uart_settings(uint8_t *buffer, uint8_t *size) {
+
+	if (buffer == NULL || size == NULL) return CTIA_INVALID_PARAMETER;
+	if (*size != 7) return CTIA_INVALID_PARAMETER;
+
+	uint32_t baud =
+		((uint32_t)buffer[0]) |
+		((uint32_t)buffer[1] << 8) |
+		((uint32_t)buffer[2] << 16) |
+		((uint32_t)buffer[3] << 24);
+
+	uint8_t data_bits = buffer[4];
+	uint8_t stop_bits = buffer[5];
+	uint8_t parity    = buffer[6];
+
+	return cTIA_uart_configure(baud, data_bits, stop_bits, parity);
+}
+
 ctia_status_t cTIA_execute_selftest(uint8_t *buffer, uint8_t *size){
 
 	if (buffer == NULL || size == NULL) return CTIA_FAIL;
@@ -835,11 +924,11 @@ ctia_status_t cTIA_i2c_transmit(uint8_t *buffer, uint8_t *size) {
         ((uint32_t)buffer[3] << 16) |
         ((uint32_t)buffer[4] << 24);
 
-    uint16_t bytes_to_read = *size - 5;
+    uint16_t bytes_to_send = *size - 5;
 
     *size = 0;
 
-    HAL_StatusTypeDef st = HAL_I2C_Master_Transmit(&hi2c2, device_addr, buffer + 5, bytes_to_read, timeout);
+    HAL_StatusTypeDef st = HAL_I2C_Master_Transmit(&hi2c2, device_addr, buffer + 5, bytes_to_send, timeout);
 
     switch (st)
     {
@@ -886,8 +975,7 @@ ctia_status_t cTIA_i2c_receive(uint8_t *buffer, uint8_t *size)
     if (st != HAL_OK)
     	*size = 0;
 
-    switch (st)
-    {
+    switch (st) {
         case HAL_OK:
             return CTIA_SUCCESS;
 
@@ -903,11 +991,76 @@ ctia_status_t cTIA_i2c_receive(uint8_t *buffer, uint8_t *size)
     }
 }
 
-ctia_status_t cTIA_uart_transmit(uint8_t *buffer, uint8_t size) {
+ctia_status_t cTIA_uart_transceive(uint8_t *buffer, uint8_t *size)
+{
+    if (!buffer || !size)
+        return CTIA_INVALID_PARAMETER;
 
-	if (buffer == NULL || size == 0) return CTIA_INVALID_PARAMETER;
+    if (buffer[0] > 120)
+        return CTIA_INVALID_PARAMETER;
 
-	HAL_UART_Transmit(&huart1, buffer, size, 1000);
+    uint8_t bytes_to_read = buffer[0];
 
-	return CTIA_SUCCESS;
+    uint32_t timeout =
+        ((uint32_t)buffer[1]) |
+        ((uint32_t)buffer[2] << 8) |
+        ((uint32_t)buffer[3] << 16) |
+        ((uint32_t)buffer[4] << 24);
+
+    uint16_t bytes_to_send = *size - 5;
+    *size = 0;
+
+    uint32_t start_tick = HAL_GetTick();
+    uint32_t start_pos  = dma_rx_pos();
+
+    if (bytes_to_send > 0) {
+    	HAL_StatusTypeDef st = HAL_UART_Transmit(&huart1, buffer + 5, bytes_to_send, timeout);
+		if (st != HAL_OK) {
+			if (st == HAL_TIMEOUT)
+				return CTIA_TIMEOUT;
+			if (st == HAL_BUSY)
+				return CTIA_BUSY;
+			return CTIA_FAIL;
+		}
+    }
+
+    if (bytes_to_read == 0)
+        return CTIA_SUCCESS;
+
+    while ((HAL_GetTick() - start_tick) < timeout) {
+        uint32_t pos = dma_rx_pos();
+
+        uint32_t received = (pos >= start_pos)
+            ? (pos - start_pos)
+            : (UART_RX_BUFFER_SIZE - start_pos + pos);
+
+        if (received >= bytes_to_read) {
+            for (uint32_t i = 0; i < bytes_to_read; i++) {
+                uint32_t idx = (start_pos + i) % UART_RX_BUFFER_SIZE;
+                buffer[i] = uart_rx_buffer[idx];
+            }
+
+            *size = bytes_to_read;
+            return CTIA_SUCCESS;
+        }
+    }
+
+    uint32_t pos = dma_rx_pos();
+    uint32_t received = (pos >= start_pos)
+        ? (pos - start_pos)
+        : (UART_RX_BUFFER_SIZE - start_pos + pos);
+
+    if (received > 0) {
+        uint32_t count = (received > bytes_to_read) ? bytes_to_read : received;
+
+        for (uint32_t i = 0; i < count; i++) {
+            uint32_t idx = (start_pos + i) % UART_RX_BUFFER_SIZE;
+            buffer[i] = uart_rx_buffer[idx];
+        }
+
+        *size = count;
+        return CTIA_SUCCESS;   // partial data accepted
+    }
+
+    return CTIA_TIMEOUT;
 }
